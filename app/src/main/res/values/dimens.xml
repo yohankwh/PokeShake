@@ -5,4 +5,9 @@
     <dimen name="def_padding">10dp</dimen>
     <dimen name="image_size">258dp</dimen>
     <dimen name="type_width">120dp</dimen>
+    <dimen name="default_fontsize">20sp</dimen>
+    <dimen name="ib_margin_top">34dp</dimen>
+    <dimen name="ib_margin_top1">11dp</dimen>
+    <dimen name="box_item_height">100dp</dimen>
+    <dimen name="width0">0dp</dimen>
 </resources>

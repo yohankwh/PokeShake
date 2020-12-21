@@ -10,6 +10,7 @@
     <color name="danger_red">#D72323</color>
     <color name="train_blue">#00ADB5</color>
     <color name="bg_default">#252525</color>
+<<<<<<< Updated upstream
     <color name="image_default_bg">#E8E8E8</color>
     <color name="type_bug">#A8B820</color>
     <color name="type_dark">#705848</color>
@@ -29,4 +30,6 @@
     <color name="type_rock">#B8A038</color>
     <color name="type_steel">#B8B8D0</color>
     <color name="type_water">#6890F0</color>
+=======
+>>>>>>> Stashed changes
 </resources>
