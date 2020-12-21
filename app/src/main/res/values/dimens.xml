@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="menu_height">45dp</dimen>
+    <dimen name="menu_btn_width">115dp</dimen>
+    <dimen name="def_padding">10dp</dimen>
+    <dimen name="image_size">258dp</dimen>
+    <dimen name="type_width">120dp</dimen>
+</resources>
