@@ -45,8 +45,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Adopt an Egg"
-                    android:background="@drawable/button_background"
-                    android:backgroundTint="@color/white"/>
+                    android:background="@drawable/rounded_corner"
+                    />
 
 
             </RelativeLayout>
