@@ -36,20 +36,41 @@
                 android:textSize="35sp"
                 android:textStyle="bold"/>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <Button
+                    android:id="@+id/btnAdpotEgg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginTop="20dp"
                     android:text="Adopt an Egg"
-                    android:background="@drawable/rounded_corner"
-                    />
+                    android:textAllCaps="false"/>
 
+                <Button
+                    android:id="@+id/btnMyPokemon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/white"
+                    android:text="My Pokemon"
+                    android:textAllCaps="false"/>
 
-            </RelativeLayout>
+                <Button
+                    android:id="@+id/btnExit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/white"
+                    android:text="Exit"
+                    android:textAllCaps="false"/>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
