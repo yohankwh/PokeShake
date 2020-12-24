@@ -209,4 +209,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
         return pokemons;
     }
+
+    @Override
+    public void closeApplication(){
+        this.moveTaskToBack(true);
+        this.finish();
+    }
 }

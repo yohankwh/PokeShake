@@ -1,7 +1,10 @@
 package com.example.pokeshake;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+
+import org.json.JSONException;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
     private TextView moneyTV;
@@ -31,13 +36,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         this.pokeMenuBtn = view.findViewById(R.id.btnMyPokemon);
         this.exitBtn = view.findViewById(R.id.btnExit);
 
+        this.adoptBtn.setOnClickListener(this);
         this.pokeMenuBtn.setOnClickListener(this);
+        this.exitBtn.setOnClickListener(this);
 
         this.testBtn = view.findViewById(R.id.btnTestPage);
 
         this.testBtn.setOnClickListener(this);
 
         view.setOnClickListener(this);
+
 
         return view;
     }
@@ -55,8 +63,43 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
-        if(view == this.pokeMenuBtn){
+        if(view.getId() == this.adoptBtn.getId()){
+
+            AlertDialog.Builder builderAlert = new AlertDialog.Builder(getActivity());
+            builderAlert.setTitle("Egg Claimed")
+//                    .setMessage("Apakah kamu ingin keluar?")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+            builderAlert.create();
+            builderAlert.show();
+        }
+        else if(view.getId() == this.pokeMenuBtn.getId()){
             this.fragmentListener.changePage(2);
+        }else if(view.getId() == this.exitBtn.getId()){
+            Log.d("debug", "tombol keluar");
+
+            AlertDialog.Builder builderAlert = new AlertDialog.Builder(getActivity());
+            builderAlert.setTitle("Keluar")
+                    .setMessage("Apakah kamu ingin keluar?")
+                    .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Log.d("debug", "clicked Delete");
+                            fragmentListener.closeApplication();
+                        }
+                    })
+                    .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+            builderAlert.create();
+            builderAlert.show();
         }else if(view == this.testBtn){
             this.fragmentListener.changePage(3);
         }

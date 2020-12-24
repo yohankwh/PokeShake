@@ -8,4 +8,5 @@ public interface FragmentListener {
     public void changePage(int page);
     public int getMoney();
     public List<Pokemon> loadPokemons() throws JSONException;
+    void closeApplication();
 }
