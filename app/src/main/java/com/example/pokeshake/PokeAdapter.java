@@ -5,6 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +57,12 @@ public class PokeAdapter extends BaseAdapter {
         private int position;
         private FragmentListener fragmentListener;
 
-        public ViewHolder(View view){
+        private ImageView miniPokeIV;
+        private TextView pokeNameTV;
 
+        public ViewHolder(View view){
+            this.miniPokeIV = view.findViewById(R.id.mini_poke_iv);
+            this.pokeNameTV = view.findViewById(R.id.poke_name_tv);
         }
 
         @Override
@@ -64,6 +73,8 @@ public class PokeAdapter extends BaseAdapter {
         public void updateView(Pokemon poke, int position){
             this.position = position;
             this.poke = poke;
+            this.pokeNameTV.setText(poke.getName());
+            Picasso.get().load(poke.getImageUrl()).into(this.miniPokeIV);
         }
     }
 }

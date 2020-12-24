@@ -12,9 +12,12 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/money_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:paddingRight="10dp"
+            android:textAlignment="textEnd"
             android:text="Point: 0"
             android:textColor="@color/white"
             android:textSize="19sp" />
@@ -69,6 +72,16 @@
                     android:layout_marginTop="20dp"
                     android:backgroundTint="@color/white"
                     android:text="Exit"
+                    android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/btnTestPage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/white"
+                    android:text="TESTING"
                     android:textAllCaps="false"/>
             </LinearLayout>
         </LinearLayout>
