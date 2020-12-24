@@ -65,4 +65,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         }
         ft.commit();
     }
+
+    @Override
+    public void closeApplication(){
+        this.moveTaskToBack(true);
+        this.finish();
+    }
 }
