@@ -34,20 +34,24 @@ public class PokeMenuFragment extends Fragment implements View.OnClickListener{
         this.pokemons = view.findViewById(R.id.lst_pokemons);
         this.adapter = new PokeAdapter((Activity)this.fragmentListener);
         this.pokeList = new LinkedList<Pokemon>();
-        try {
-            Log.d("LOAD:","ON PROGRESS");
-            this.pokeList.addAll(this.fragmentListener.loadPokemons());
-            Log.d("LOADED: ",this.pokeList.get(0).getImageUrl());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        Log.d("LOAD:","ON PROGRESS");
+        this.pokeList.addAll(this.fragmentListener.getPokemons());
+        Log.d("LOADED: ",this.pokeList.get(0).getImageUrl());
+
         this.pokemons.setAdapter(this.adapter);
+        this.adapter.update(this.pokeList);
 
         return view;
     }
 
     public void updateList(List<Pokemon> pokemons){
         this.adapter.update(pokemons);
+    }
+
+    public void addPokemon(Pokemon pokemon){
+        this.pokeList.add(pokemon);
+        this.updateList(this.pokeList);
     }
 
     @Override

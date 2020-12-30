@@ -1,6 +1,8 @@
 package com.example.pokeshake;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +49,12 @@ public class PokeAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.updateView((Pokemon)this.getItem(i),i);
+
+        try {
+            viewHolder.updateView((Pokemon)this.getItem(i),i);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return convertView;
     }
 
@@ -70,11 +79,20 @@ public class PokeAdapter extends BaseAdapter {
 
         }
 
-        public void updateView(Pokemon poke, int position){
+        public void updateView(Pokemon poke, int position) throws IOException {
             this.position = position;
             this.poke = poke;
             this.pokeNameTV.setText(poke.getName());
-            Picasso.get().load(poke.getImageUrl()).into(this.miniPokeIV);
+            if(poke.getLevel()<5){
+                // get input stream
+                InputStream ims = activity.getAssets().open("egg.png");
+                // load image as Drawable
+                Drawable d = Drawable.createFromStream(ims, null);
+                // set image to ImageView
+                this.miniPokeIV.setImageDrawable(d);
+            }else{
+                Picasso.get().load(poke.getImageUrl()).into(this.miniPokeIV);
+            }
         }
     }
 }

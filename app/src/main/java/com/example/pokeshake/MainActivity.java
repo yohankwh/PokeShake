@@ -28,12 +28,14 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     private HomeFragment homeFragment;
 
     private TestFragment testFragment;
+    private List<Pokemon> pokeList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.pokeList = new LinkedList<Pokemon>();
         try {                       //load saved data
             initSavedProfileData();
         } catch (JSONException e) {
@@ -42,11 +44,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
         this.fragmentManager = this.getSupportFragmentManager();
         FragmentTransaction ft = this.fragmentManager.beginTransaction();
-
         this.homeFragment = new HomeFragment();
         this.pokeMenuFragment = new PokeMenuFragment();
         this.viewFragment = new ViewFragment();
-
         this.testFragment = new TestFragment();
 
         ft.add(R.id.fragment_container, this.homeFragment)
@@ -58,14 +58,15 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         String saved = loadProfileData();
         if(saved.equals("empty")){
             JSONObject saveObj = new JSONObject();
-            this.money = 0;
-            saveObj.put("money", "0");
+            this.money = 5;//TEMPORARY VALUE: 5
+            saveObj.put("money", 5);
 
             saveProfileData(saveObj.toString());
         }else{
             JSONObject object = new JSONObject(saved);
             this.money = object.getInt("money");
         }
+        this.loadPokeStorage();
     }
 
     public String loadProfileData(){
@@ -128,7 +129,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "empty";
+            //ini buat testing ;)
+            return "{\"pokemons\":[{\"id\":\"1\",\"name\":\"Bulbasaur\",\"level\":5,\"curExp\":0},{\"id\":\"4\",\"name\":\"Charmander\",\"level\":5,\"curExp\":0},{\"id\":\"7\",\"name\":\"Squirtle\",\"level\":5,\"curExp\":0}]}";
+//            return "empty";
         }
     }
 
@@ -185,7 +188,16 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     public int getMoney() {return this.money;}
 
     @Override
-    public List<Pokemon> loadPokemons() throws JSONException {
+    public void updateMoney(int money) {
+        this.money = money;
+    }
+
+    @Override
+    public List<Pokemon> getPokemons(){
+        return this.pokeList;
+    }
+
+    public void loadPokeStorage() throws JSONException {
         String data = loadPokeData();
         List<Pokemon> pokemons = new LinkedList<Pokemon>();
         if(data.equals("empty")){
@@ -198,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             JSONArray pkmnArr = pkmnData.getJSONArray("pokemons");
             for(int i=0 ; i<pkmnArr.length() ; i++){
                 JSONObject obj = pkmnArr.getJSONObject(i);
+                Log.d("name is:",obj.getString("name"));
                 Pokemon pkmn = new Pokemon(obj.getInt("id"),
                                            obj.getString("name"),
                                            obj.getInt("level"),
@@ -207,7 +220,13 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             }
         }
 
-        return pokemons;
+        this.pokeList.addAll(pokemons);
+    }
+
+    @Override
+    public void adoptPokemon(Pokemon pokemon) {
+        this.pokeList.add(pokemon);
+//        this.pokeMenuFragment.addPokemon(pokemon);
     }
 
     @Override

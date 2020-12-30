@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 public class Pokemon {
     private int id;
+    private boolean isEgg;
     private String name;
     private int level;
     private int curExp;
@@ -27,6 +28,16 @@ public class Pokemon {
         this.name = name;
         this.level = level;
         this.curExp = curExp;
+        this.isEgg = level < 5;//if <5, is an egg
+    }
+
+    public void hatch(){
+        this.isEgg = false;
+        this.level = 5;
+    }
+
+    public String getName() {
+        return this.level < 5 ? "Egg" : this.name;//if level<5, display name as egg
     }
 
     public int getID(){ return this.id; }
@@ -40,8 +51,6 @@ public class Pokemon {
     public String getImageUrl() {return imageUrl;}
 
     public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
-
-    public String getName() {return name;}
 
     public void setName(String name) {this.name = name;}
 

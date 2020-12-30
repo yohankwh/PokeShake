@@ -13,7 +13,19 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Random;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
     private TextView moneyTV;
@@ -23,6 +35,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private FragmentListener fragmentListener;
 
     private Button testBtn;
+    private Random rand;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,6 +48,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         this.adoptBtn = view.findViewById(R.id.btnAdoptEgg);
         this.pokeMenuBtn = view.findViewById(R.id.btnMyPokemon);
         this.exitBtn = view.findViewById(R.id.btnExit);
+
+        this.rand = new Random();
 
         this.adoptBtn.setOnClickListener(this);
         this.pokeMenuBtn.setOnClickListener(this);
@@ -64,18 +79,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         if(view.getId() == this.adoptBtn.getId()){
-
-            AlertDialog.Builder builderAlert = new AlertDialog.Builder(getActivity());
-            builderAlert.setTitle("Egg Claimed")
-//                    .setMessage("Apakah kamu ingin keluar?")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-            builderAlert.create();
-            builderAlert.show();
+            if(this.fragmentListener.getMoney()>=1){
+                claimPokemon();
+            }
         }
         else if(view.getId() == this.pokeMenuBtn.getId()){
             this.fragmentListener.changePage(2);
@@ -103,5 +109,53 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         }else if(view == this.testBtn){
             this.fragmentListener.changePage(3);
         }
+    }
+
+    public void claimPokemon(){
+        int pokeEvolID = rand.nextInt(148)+1; //evol chain data is 1 to 148
+        RequestQueue queue = Volley.newRequestQueue(this.getContext());
+        String url ="https://pokeapi.co/api/v2/evolution-chain/"+pokeEvolID+"/";
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONObject poke = (JSONObject)((JSONObject)res.get("chain")).get("species");
+                            URI uri = new URI(poke.getString("url"));
+                            String[] segments = uri.getPath().split("/");
+                            String idStr = segments[segments.length-1];
+                            int pokeID = Integer.parseInt(idStr);
+                            String pokeName = poke.getString("name");
+
+                            Pokemon newPoke = new Pokemon(pokeID, pokeName, 1, 0);
+                            fragmentListener.adoptPokemon(newPoke);
+                            int money = fragmentListener.getMoney();
+                            fragmentListener.updateMoney(money-1);
+                            moneyTV.setText("Point: "+(money-1)+"");
+
+                            AlertDialog.Builder builderAlert = new AlertDialog.Builder(getActivity());
+                            builderAlert.setTitle("Egg Claimed")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                            builderAlert.create();
+                            builderAlert.show();
+
+                        } catch (JSONException | URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+
+        queue.add(stringRequest);
     }
 }
