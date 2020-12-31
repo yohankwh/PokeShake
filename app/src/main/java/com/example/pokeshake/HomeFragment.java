@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private Button exitBtn;
     private FragmentListener fragmentListener;
 
+    private long mLastClickTime = 0;
     private Button testBtn;
     private Random rand;
 
@@ -79,9 +81,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         if(view.getId() == this.adoptBtn.getId()){
-            if(this.fragmentListener.getMoney()>=1){
-                claimPokemon();
+            if (SystemClock.elapsedRealtime() - mLastClickTime > 1000){
+                if(this.fragmentListener.getMoney()>=1){
+                    claimPokemon();
+                }
             }
+            mLastClickTime = SystemClock.elapsedRealtime();
+
         }
         else if(view.getId() == this.pokeMenuBtn.getId()){
             this.fragmentListener.changePage(2);
