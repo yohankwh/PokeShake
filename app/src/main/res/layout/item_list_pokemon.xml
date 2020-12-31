@@ -7,7 +7,7 @@
     android:layout_height="@dimen/box_item_height"
     android:orientation="horizontal"
     android:weightSum="14"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    android:background="@color/bg_default">
 
 
         <androidx.cardview.widget.CardView
@@ -37,6 +37,7 @@
             android:gravity="center_vertical|left|start"
             android:textSize="@dimen/default_fontsize"
             android:text="Pokemon A"
+            android:textColor="@color/white"
             android:layout_weight="9"/>
 
         <ImageButton
@@ -45,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="@dimen/ib_margin_top"
+            android:backgroundTint="@color/white"
             android:background="@android:drawable/star_big_off">
 
         </ImageButton>
