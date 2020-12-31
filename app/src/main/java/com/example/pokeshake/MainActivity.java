@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import retrofit2.Retrofit;
+
 public class MainActivity extends AppCompatActivity implements FragmentListener{
     private int money;
     private FragmentManager fragmentManager;
@@ -29,6 +31,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
     private TestFragment testFragment;
     private List<Pokemon> pokeList;
+
+    private Retrofit retrofit;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
