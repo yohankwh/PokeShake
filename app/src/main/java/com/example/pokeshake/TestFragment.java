@@ -64,107 +64,107 @@ public class TestFragment extends Fragment implements View.OnClickListener {
                     + "must implement FragmentListener");
         }
     }
-
-    public void sendAPIRequest(int id){
-        Context ctx = this.getContext();
-        int levelSelected = 5;
-
-        String url = SPECIES_URL+id;
-
-        RequestQueue queue = Volley.newRequestQueue(this.getContext());
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        RequestQueue queue2 = Volley.newRequestQueue(ctx);
-                        Pokemon pkmn = new Pokemon(1,"2",3,4);
-
-                        try {
-                            JSONObject growth = new JSONObject(response);
-                            String growthUrl = ((JSONObject)growth.get("growth_rate")).getString("url");
-                            String evolveUrl = ((JSONObject)growth.get("evolution_chain")).getString("url");
-
-                            StringRequest req2 = new StringRequest(Request.Method.GET, growthUrl,
-                                new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        RequestQueue queue3 = Volley.newRequestQueue(ctx);
-
-                                        try {
-                                            JSONArray levelsArr = new JSONObject(response).getJSONArray("levels");
-                                            JSONObject expForCurrLvl = (JSONObject)levelsArr.get(levelSelected - 1);
-                                            pkmn.setExpPool(expForCurrLvl.getInt("experience"));
-
-                                            StringRequest req3 = new StringRequest(Request.Method.GET, evolveUrl,
-                                                new Response.Listener<String>() {
-                                                    @Override
-                                                    public void onResponse(String response) {
-                                                        try {
-                                                            JSONObject chain = (JSONObject) new JSONObject(response).get("chain");
-                                                            if(chain.getString("species").equals(pkmn.getName())){
-
-                                                            }
-                                                        } catch (JSONException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                }, new Response.ErrorListener() {
-                                                @Override
-                                                public void onErrorResponse(VolleyError error) {
-                                                    testtv.setText("That didn't work!");
-                                                }
-                                            });
-                                            queue3.add(req3);
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    testtv.setText("That didn't work!");
-                                }
-                            });
-                            queue2.add(req2);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                testtv.setText("That didn't work!");
-            }
-        });
-
-        queue.add(stringRequest);
-    }
-
-    public void registerPokemon(Pokemon pkmn){
-        this.pokemon = pkmn;
-        String toShow = "name: "+pkmn.getName()+"\n lvl: "+pkmn.getLevel()+"\n exp_pool: "+pkmn.getExpPool();
-        testtv.setText(toShow);
-        Log.d("WHAT","WTF U DOIN");
-    }
-
-    public void getPokemonData(){
-        int id = 1;
-        sendAPIRequest(id);
-    }
-
-    public void train(){
-        this.pokemon.train();
-    }
+//
+//    public void sendAPIRequest(int id){
+//        Context ctx = this.getContext();
+//        int levelSelected = 5;
+//
+//        String url = SPECIES_URL+id;
+//
+//        RequestQueue queue = Volley.newRequestQueue(this.getContext());
+//
+//        // Request a string response from the provided URL.
+//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        RequestQueue queue2 = Volley.newRequestQueue(ctx);
+//                        Pokemon pkmn = new Pokemon(1,"2",3,4);
+//
+//                        try {
+//                            JSONObject growth = new JSONObject(response);
+//                            String growthUrl = ((JSONObject)growth.get("growth_rate")).getString("url");
+//                            String evolveUrl = ((JSONObject)growth.get("evolution_chain")).getString("url");
+//
+//                            StringRequest req2 = new StringRequest(Request.Method.GET, growthUrl,
+//                                new Response.Listener<String>() {
+//                                    @Override
+//                                    public void onResponse(String response) {
+//                                        RequestQueue queue3 = Volley.newRequestQueue(ctx);
+//
+//                                        try {
+//                                            JSONArray levelsArr = new JSONObject(response).getJSONArray("levels");
+//                                            JSONObject expForCurrLvl = (JSONObject)levelsArr.get(levelSelected - 1);
+//                                            pkmn.setExpPool(expForCurrLvl.getInt("experience"));
+//
+//                                            StringRequest req3 = new StringRequest(Request.Method.GET, evolveUrl,
+//                                                new Response.Listener<String>() {
+//                                                    @Override
+//                                                    public void onResponse(String response) {
+//                                                        try {
+//                                                            JSONObject chain = (JSONObject) new JSONObject(response).get("chain");
+//                                                            if(chain.getString("species").equals(pkmn.getName())){
+//
+//                                                            }
+//                                                        } catch (JSONException e) {
+//                                                            e.printStackTrace();
+//                                                        }
+//                                                    }
+//                                                }, new Response.ErrorListener() {
+//                                                @Override
+//                                                public void onErrorResponse(VolleyError error) {
+//                                                    testtv.setText("That didn't work!");
+//                                                }
+//                                            });
+//                                            queue3.add(req3);
+//
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                }, new Response.ErrorListener() {
+//                                @Override
+//                                public void onErrorResponse(VolleyError error) {
+//                                    testtv.setText("That didn't work!");
+//                                }
+//                            });
+//                            queue2.add(req2);
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                testtv.setText("That didn't work!");
+//            }
+//        });
+//
+//        queue.add(stringRequest);
+//    }
+//
+//    public void registerPokemon(Pokemon pkmn){
+//        this.pokemon = pkmn;
+//        String toShow = "name: "+pkmn.getName()+"\n lvl: "+pkmn.getLevel()+"\n exp_pool: "+pkmn.getExpPool();
+//        testtv.setText(toShow);
+//        Log.d("WHAT","WTF U DOIN");
+//    }
+//
+//    public void getPokemonData(){
+//        int id = 1;
+//        sendAPIRequest(id);
+//    }
+//
+//    public void train(){
+//        this.pokemon.train();
+//    }
 
     @Override
     public void onClick(View view) {
-        if(view==this.test){
-            getPokemonData();
-        }else if(view==this.trainTestBtn){
-            train();
-        }
+//        if(view==this.test){
+//            getPokemonData();
+//        }else if(view==this.trainTestBtn){
+//            train();
+//        }
     }
 }

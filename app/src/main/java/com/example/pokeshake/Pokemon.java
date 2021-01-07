@@ -18,8 +18,7 @@ public class Pokemon {
     private String name;
     private int level;
     private int curExp;
-    private int expPool;
-    private int nextEvoLvl;
+    private int growthRate;
     private String imageUrl;
 
     public Pokemon(int id, String name, int level, int curExp){
@@ -44,10 +43,6 @@ public class Pokemon {
 
     public void setID(int id){ this.id = id; }
 
-    public int getNextEvoLvl() {return nextEvoLvl;}
-
-    public void setNextEvoLvl(int nextEvoLvl) {this.nextEvoLvl = nextEvoLvl;}
-
     public String getImageUrl() {return imageUrl;}
 
     public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
@@ -61,10 +56,6 @@ public class Pokemon {
     public int getCurExp() {return curExp;}
 
     public void setCurExp(int curExp) {this.curExp = curExp;}
-
-    public int getExpPool() {return expPool;}
-
-    public void setExpPool(int expPool) {this.expPool = expPool;}
 
     public void train(){
         this.curExp+=5;
