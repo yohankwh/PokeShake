@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import retrofit2.Retrofit;
+import com.github.mikephil.charting.charts.RadarChart;
 
 public class MainActivity extends AppCompatActivity implements FragmentListener{
     private int money;
@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     private TestFragment testFragment;
     private List<Pokemon> pokeList;
 
-    private Retrofit retrofit;
-
+    private RadarChart chart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,10 +171,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
                 ft.hide(this.testFragment);
             }
         } else if (page == 3) {
-            if(this.testFragment.isAdded()){
-                ft.show(this.testFragment);
+            if(this.viewFragment.isAdded()){
+                ft.show(this.viewFragment);
             }else{
-                ft.add(R.id.fragment_container, this.testFragment)
+                ft.add(R.id.fragment_container, this.viewFragment)
                         .addToBackStack(null);
             }
 
