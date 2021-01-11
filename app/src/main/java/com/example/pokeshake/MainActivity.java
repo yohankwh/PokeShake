@@ -130,9 +130,60 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         } catch (IOException e) {
             e.printStackTrace();
             //ini buat testing ;)
-            return "{\"pokemons\":[{\"id\":\"1\",\"name\":\"Bulbasaur\",\"level\":5,\"curExp\":0},{\"id\":\"4\",\"name\":\"Charmander\",\"level\":5,\"curExp\":0},{\"id\":\"7\",\"name\":\"Squirtle\",\"level\":5,\"curExp\":0}]}";
-//            return "empty";
+            return "empty";
         }
+    }
+
+    @Override
+    public int getMoney() {return this.money;}
+
+    @Override
+    public void updateMoney(int money) {
+        this.money = money;
+    }
+
+    @Override
+    public List<Pokemon> getPokemons(){
+        return this.pokeList;
+    }
+
+    public void loadPokeStorage() throws JSONException {
+        String data = loadPokeData();
+        List<Pokemon> pokemons = new LinkedList<Pokemon>();
+        if(data.equals("empty")){
+            JSONArray pkmnArr = new JSONArray();
+            JSONObject pkmnData = new JSONObject();
+            pkmnData.put("pokemons",pkmnArr);
+            savePokeData(pkmnData.toString());
+        }else{
+            JSONObject pkmnData = new JSONObject(data);
+            JSONArray pkmnArr = pkmnData.getJSONArray("pokemons");
+            for(int i=0 ; i<pkmnArr.length() ; i++){
+                JSONObject obj = pkmnArr.getJSONObject(i);
+                Log.d("name is:",obj.getString("name"));
+                Pokemon pkmn = new Pokemon(obj.getInt("id"),
+                                           obj.getString("name"),
+                                           obj.getInt("level"),
+                                           obj.getInt("curExp"),
+                                           obj.getInt("gRate"),
+                                           obj.getString("types"));
+                pokemons.add(pkmn);
+            }
+        }
+
+        this.pokeList.addAll(pokemons);
+    }
+
+    @Override
+    public void adoptPokemon(Pokemon pokemon) {
+        this.pokeList.add(pokemon);
+//        this.pokeMenuFragment.addPokemon(pokemon);
+    }
+
+    @Override
+    public void closeApplication(){
+        this.moveTaskToBack(true);
+        this.finish();
     }
 
     @Override
@@ -182,56 +233,5 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             }
         }
         ft.commit();
-    }
-
-    @Override
-    public int getMoney() {return this.money;}
-
-    @Override
-    public void updateMoney(int money) {
-        this.money = money;
-    }
-
-    @Override
-    public List<Pokemon> getPokemons(){
-        return this.pokeList;
-    }
-
-    public void loadPokeStorage() throws JSONException {
-        String data = loadPokeData();
-        List<Pokemon> pokemons = new LinkedList<Pokemon>();
-        if(data.equals("empty")){
-            JSONArray pkmnArr = new JSONArray();
-            JSONObject pkmnData = new JSONObject();
-            pkmnData.put("pokemons",pkmnArr);
-            savePokeData(pkmnData.toString());
-        }else{
-            JSONObject pkmnData = new JSONObject(data);
-            JSONArray pkmnArr = pkmnData.getJSONArray("pokemons");
-            for(int i=0 ; i<pkmnArr.length() ; i++){
-                JSONObject obj = pkmnArr.getJSONObject(i);
-                Log.d("name is:",obj.getString("name"));
-                Pokemon pkmn = new Pokemon(obj.getInt("id"),
-                                           obj.getString("name"),
-                                           obj.getInt("level"),
-                                           obj.getInt("curExp"));
-
-                pokemons.add(pkmn);
-            }
-        }
-
-        this.pokeList.addAll(pokemons);
-    }
-
-    @Override
-    public void adoptPokemon(Pokemon pokemon) {
-        this.pokeList.add(pokemon);
-//        this.pokeMenuFragment.addPokemon(pokemon);
-    }
-
-    @Override
-    public void closeApplication(){
-        this.moveTaskToBack(true);
-        this.finish();
     }
 }

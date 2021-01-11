@@ -14,38 +14,38 @@ import org.json.JSONObject;
 
 public class Pokemon {
     private int id;
-    private boolean isEgg;
     private String name;
     private int level;
     private int curExp;
     private int growthRate;
-    private String imageUrl;
+    private String types;
 
-    public Pokemon(int id, String name, int level, int curExp){
+    public Pokemon(int id, String name, int level, int curExp, int growthRate, String types){
         this.id = id;
-        this.imageUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+id+".png";
         this.name = name;
         this.level = level;
         this.curExp = curExp;
-        this.isEgg = level < 5;//if <5, is an egg
+        this.growthRate = growthRate;
+        this.types = types;
     }
 
-    public void hatch(){
-        this.isEgg = false;
-        this.level = 5;
-    }
+    public void hatch(){this.setLevel(5);}
 
     public String getName() {
-        return this.level < 5 ? "Egg" : this.name;//if level<5, display name as egg
+        return isEgg() ? "Egg" : this.name;//if level<5, display name as egg
+    }
+
+    public String getImageUrl(){
+        return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"+getID()+".png";
+    }
+
+    public boolean isEgg(){
+        return this.level < 5;//if level<5, form is egg
     }
 
     public int getID(){ return this.id; }
 
     public void setID(int id){ this.id = id; }
-
-    public String getImageUrl() {return imageUrl;}
-
-    public void setImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 
     public void setName(String name) {this.name = name;}
 

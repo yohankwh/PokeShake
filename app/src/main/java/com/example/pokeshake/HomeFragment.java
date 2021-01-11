@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -118,50 +119,106 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     }
 
     public void claimPokemon(){
-        int pokeEvolID = rand.nextInt(148)+1; //evol chain data is 1 to 148
-        RequestQueue queue = Volley.newRequestQueue(this.getContext());
-        String url ="https://pokeapi.co/api/v2/evolution-chain/"+pokeEvolID+"/";
+        //save context in a var for later
+        Context ctx = this.getContext();
 
+        //get random pokemon by evolution ID, lewat endpoint yg ini bisa hemat request (setau saya?)
+        int pokeEvolID = rand.nextInt(148)+1; //variasi ID dari 1 sampe 148 (ditentuin sama kita)
+
+        /*Fetching Data dengan Volley*/
+        //Request bagian Luar: Tujuannya dapetin ID Pokemon dan URL Speciesnya
+        RequestQueue queue = Volley.newRequestQueue(this.getContext()); //Buat Queue Object 1
+        String url ="https://pokeapi.co/api/v2/evolution-chain/"+pokeEvolID+"/";    //Gabung ID ke URL yang mau di Fetch
+
+        //Volley Request 1
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject res = new JSONObject(response);
-                            JSONObject poke = (JSONObject)((JSONObject)res.get("chain")).get("species");
-                            URI uri = new URI(poke.getString("url"));
-                            String[] segments = uri.getPath().split("/");
-                            String idStr = segments[segments.length-1];
-                            int pokeID = Integer.parseInt(idStr);
-                            String pokeName = poke.getString("name");
+            new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        //Ambil URL dari hasil Response
+                        JSONObject res = new JSONObject(response);
+                        JSONObject poke = (JSONObject)((JSONObject)res.get("chain")).get("species");
+                        URI uri = new URI(poke.getString("url"));   //Ambil URL
 
-                            Pokemon newPoke = new Pokemon(pokeID, pokeName, 1, 0);
-                            fragmentListener.adoptPokemon(newPoke);
-                            int money = fragmentListener.getMoney();
-                            fragmentListener.updateMoney(money-1);
-                            moneyTV.setText("Point: "+(money-1)+"");
+                        //Pecahin dari URL jadi dapet ID Pokemon
+                        String[] segments = uri.getPath().split("/");
+                        String idStr = segments[segments.length-1];
+                        int pokeID = Integer.parseInt(idStr);   //Ambil ID
 
-                            AlertDialog.Builder builderAlert = new AlertDialog.Builder(getActivity());
-                            builderAlert.setTitle("Egg Claimed")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
+                        //Request bagian tengah: Tujuannya dapetin growth rate ID
+                        RequestQueue queue2 = Volley.newRequestQueue(ctx);
+                        String speciesUrl = poke.getString("url");
 
-                                        }
-                                    });
-                            builderAlert.create();
-                            builderAlert.show();
+                        //Volley Request 2
+                        StringRequest req2 = new StringRequest(Request.Method.GET, speciesUrl,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response2) {
+                                    try{
+                                        JSONObject res2 = new JSONObject(response2);
+                                        URI growth_url = new URI(((JSONObject)res2.get("growth_rate")).getString("url"));
+                                        //Pecahin dari URL jadi dapet ID Growth Type
+                                        String[] segmentGrowth = growth_url.getPath().split("/");
+                                        String rateStr = segmentGrowth[segmentGrowth.length-1];
+                                        int growth_rate = Integer.parseInt(rateStr);   //Ambil growth ID
 
-                        } catch (JSONException | URISyntaxException e) {
-                            e.printStackTrace();
-                        }
+                                        //Request bagian dalem: Tujuannya dapetin stats pokemon
+                                        RequestQueue queue3 = Volley.newRequestQueue(ctx);
+                                        String pokeDataUrl = "https://pokeapi.co/api/v2/pokemon/"+pokeID;
+                                        StringRequest req3 = new StringRequest(Request.Method.GET, pokeDataUrl,
+                                            new Response.Listener<String>() {
+                                                @Override
+                                                public void onResponse(String response3) {
+                                                    try {
+                                                        //bentuk objek pokemonnya disini
+                                                        JSONObject res3 = new JSONObject(response3);
+                                                        String name = res3.getString("name");
+                                                        int[] statsArr = new int[6];
+                                                        JSONArray stats = res3.getJSONArray("stats");
+                                                        for(int i=0; i<stats.length() ;i++){
+                                                            JSONObject temp = (JSONObject) stats.get(i);
+                                                            statsArr[i] = temp.getInt("base_stat");
+                                                        }
+                                                        String pkmnType = "";
+                                                        JSONArray types = res3.getJSONArray("types");
+                                                        for(int i=0; i<types.length(); i++){
+                                                            JSONObject type = (JSONObject) ((JSONObject) types.get(i)).get("type");
+                                                            pkmnType+="#"+type.getString("name");
+                                                        }
+
+                                                        Pokemon newPoke = new Pokemon(pokeID, name, 0, 0, growth_rate, pkmnType);
+
+                                                        fragmentListener.adoptPokemon(newPoke);
+                                                        int money = fragmentListener.getMoney();
+                                                        fragmentListener.updateMoney(money-1);
+                                                        moneyTV.setText("Point: "+(money-1)+"");
+
+                                                        AlertDialog.Builder builderAlert = new AlertDialog.Builder(getActivity());
+                                                        builderAlert.setTitle("Egg Claimed")
+                                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                                @Override public void onClick(DialogInterface dialog, int which) {}
+                                                            });
+                                                        builderAlert.create();
+                                                        builderAlert.show();
+                                                    }
+                                                    catch (JSONException e) {e.printStackTrace();}
+                                                }
+                                            }, new Response.ErrorListener(){@Override public void onErrorResponse(VolleyError error){}}
+                                        );
+                                        queue3.add(req3);
+                                    }
+                                    catch (JSONException | URISyntaxException e) {e.printStackTrace();}
+                                }
+                            }, new Response.ErrorListener() {@Override public void onErrorResponse(VolleyError error) {}}
+                        );
+                        queue2.add(req2);
+
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
-        });
-
+                    catch (JSONException | URISyntaxException e) {e.printStackTrace();}
+                }
+            }, new Response.ErrorListener() {@Override public void onErrorResponse(VolleyError error) {}}
+        );//end of string request 1
         queue.add(stringRequest);
     }
 }
