@@ -3,6 +3,7 @@ package com.example.pokeshake;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
@@ -10,7 +11,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +34,7 @@ import org.json.JSONObject;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
     private TextView moneyTV;
@@ -38,10 +42,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private Button pokeMenuBtn;
     private Button exitBtn;
     private FragmentListener fragmentListener;
+    private FrameLayout progressBarHolder;
 
     private long mLastClickTime = 0;
     private Button testBtn;
     private Random rand;
+    private AlphaAnimation inAnimation;
+    private AlphaAnimation outAnimation;
+    private String myLog = "myLog";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +62,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         this.adoptBtn = view.findViewById(R.id.btnAdoptEgg);
         this.pokeMenuBtn = view.findViewById(R.id.btnMyPokemon);
         this.exitBtn = view.findViewById(R.id.btnExit);
+        this.progressBarHolder = view.findViewById(R.id.progressBarHolder);
 
         this.rand = new Random();
 
@@ -88,6 +97,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             if (SystemClock.elapsedRealtime() - mLastClickTime > 1000){
                 if(this.fragmentListener.getMoney()>=1){
                     claimPokemon();
+                    MyTask mt = new MyTask();
+                    mt.execute();
                 }
             }
             mLastClickTime = SystemClock.elapsedRealtime();
@@ -223,5 +234,41 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             }, new Response.ErrorListener() {@Override public void onErrorResponse(VolleyError error) {}}
         );//end of string request 1
         queue.add(stringRequest);
+    }
+
+    private class MyTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            adoptBtn.setEnabled(false);
+            inAnimation = new AlphaAnimation(0f, 1f);
+            inAnimation.setDuration(200);
+            progressBarHolder.setAnimation(inAnimation);
+            progressBarHolder.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            outAnimation = new AlphaAnimation(1f, 0f);
+            outAnimation.setDuration(200);
+            progressBarHolder.setAnimation(outAnimation);
+            progressBarHolder.setVisibility(View.GONE);
+            adoptBtn.setEnabled(true);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                for (int i = 0; i < 3; i++) {
+                    Log.d(myLog, "Emulating some task.. Step " + i);
+                    TimeUnit.SECONDS.sleep(1);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

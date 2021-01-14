@@ -239,52 +239,5 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         this.finish();
     }
 
-    @Override
-    public void changePage(int page) {
-        FragmentTransaction ft = this.fragmentManager.beginTransaction();
-        if (page == 1) {
-            if(this.homeFragment.isAdded()){
-                ft.show(this.homeFragment);
-            }else{
-                ft.add(R.id.fragment_container, this.homeFragment)
-                        .addToBackStack(null);
-            }
 
-            if(this.pokeMenuFragment.isAdded()){
-                ft.hide(this.pokeMenuFragment);
-            }
-            if(this.viewFragment.isAdded()){
-                ft.hide(this.viewFragment);
-            }
-        } else if (page == 2) {
-            if(this.pokeMenuFragment.isAdded()){
-                ft.show(this.pokeMenuFragment);
-            }else{
-                ft.add(R.id.fragment_container, this.pokeMenuFragment)
-                        .addToBackStack(null);
-            }
-
-            if(this.homeFragment.isAdded()){
-                ft.hide(this.homeFragment);
-            }
-            if(this.testFragment.isAdded()){
-                ft.hide(this.testFragment);
-            }
-        } else if (page == 3) {
-            if(this.testFragment.isAdded()){
-                ft.show(this.testFragment);
-            }else{
-                ft.add(R.id.fragment_container, this.testFragment)
-                        .addToBackStack(null);
-            }
-
-            if(this.homeFragment.isAdded()){
-                ft.hide(this.homeFragment);
-            }
-            if(this.testFragment.isAdded()){
-                ft.hide(this.testFragment);
-            }
-        }
-        ft.commit();
-    }
 }
