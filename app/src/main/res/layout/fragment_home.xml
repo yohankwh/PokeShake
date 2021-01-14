@@ -87,6 +87,16 @@
                     android:text="TESTING"
                     android:textColor="@color/black"
                     android:textAllCaps="false"/>
+
+                <Button
+                    android:id="@+id/btnTestShakePage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/white"
+                    android:text="Shaker testing"
+                    android:textAllCaps="false"/>
             </LinearLayout>
         </LinearLayout>
 

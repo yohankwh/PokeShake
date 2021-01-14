@@ -41,6 +41,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private Button adoptBtn;
     private Button pokeMenuBtn;
     private Button exitBtn;
+    private Button shakeBtn;
     private FragmentListener fragmentListener;
     private FrameLayout progressBarHolder;
 
@@ -69,6 +70,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         this.adoptBtn.setOnClickListener(this);
         this.pokeMenuBtn.setOnClickListener(this);
         this.exitBtn.setOnClickListener(this);
+        //sensor test
+        this.shakeBtn = view.findViewById(R.id.btnTestShakePage);
+        this.shakeBtn.setOnClickListener(this);
 
         this.testBtn = view.findViewById(R.id.btnTestPage);
 
@@ -129,6 +133,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             builderAlert.show();
         }else if(view == this.testBtn){
             this.fragmentListener.changePage(3);
+        }
+        else if(view == this.shakeBtn){
+            this.fragmentListener.changePage(4);
         }
     }
 

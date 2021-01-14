@@ -3,4 +3,6 @@
     <string name="release_text">Release</string>
     <string name="train_text">Train</string>
     <string name="judul_pokemon">Poke Shake!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

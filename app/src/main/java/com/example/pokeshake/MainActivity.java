@@ -31,8 +31,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
     private TestFragment testFragment;
     private List<Pokemon> pokeList;
-
-    private RadarChart chart;
+    //sensor shake
+    private ShakeTest shakeTester;
+//    private RadarChart chart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         this.pokeMenuFragment = new PokeMenuFragment();
         this.viewFragment = new ViewFragment();
         this.testFragment = new TestFragment();
+        this.shakeTester = new ShakeTest();
 
         ft.add(R.id.fragment_container, this.homeFragment)
                 .addToBackStack(null)
@@ -155,6 +157,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.viewFragment.isAdded()){
                 ft.hide(this.viewFragment);
             }
+            if(this.shakeTester.isAdded()){
+                ft.hide(this.shakeTester);
+            }
         } else if (page == 2) {
             if(this.pokeMenuFragment.isAdded()){
                 ft.show(this.pokeMenuFragment);
@@ -169,6 +174,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.testFragment.isAdded()){
                 ft.hide(this.testFragment);
             }
+            if(this.shakeTester.isAdded()){
+                ft.hide(this.shakeTester);
+            }
         } else if (page == 3) {
             if(this.viewFragment.isAdded()){
                 ft.show(this.viewFragment);
@@ -182,6 +190,26 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             }
             if(this.testFragment.isAdded()){
                 ft.hide(this.testFragment);
+            }
+            if(this.shakeTester.isAdded()){
+                ft.hide(this.shakeTester);
+            }
+        }else if (page == 4) {
+            if(this.shakeTester.isAdded()){
+                ft.show(this.shakeTester);
+            }else{
+                ft.add(R.id.fragment_container, this.shakeTester)
+                        .addToBackStack(null);
+            }
+
+            if(this.homeFragment.isAdded()){
+                ft.hide(this.homeFragment);
+            }
+            if(this.testFragment.isAdded()){
+                ft.hide(this.testFragment);
+            }
+            if(this.viewFragment.isAdded()){
+                ft.hide(this.viewFragment);
             }
         }
         ft.commit();
