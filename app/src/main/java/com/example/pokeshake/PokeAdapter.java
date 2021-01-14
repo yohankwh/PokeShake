@@ -83,7 +83,7 @@ public class PokeAdapter extends BaseAdapter {
             this.position = position;
             this.poke = poke;
             this.pokeNameTV.setText(poke.getName());
-            if(poke.getLevel()<5){
+            if(poke.isEgg()){
                 // get input stream
                 InputStream ims = activity.getAssets().open("egg.png");
                 // load image as Drawable
