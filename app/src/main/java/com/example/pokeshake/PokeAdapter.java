@@ -21,14 +21,28 @@ public class PokeAdapter extends BaseAdapter {
     private Activity activity;
     private List<Pokemon> pokeList;
 
-    public PokeAdapter(Activity activity){
+    public PokeAdapter(Activity activity, List<Pokemon> pokemons){
         this.activity = activity;
         this.pokeList = new ArrayList<Pokemon>();
+        this.pokeList.addAll(pokemons);
     }
 
+    /* Ubah seluruh isi list pokemon */
     public void update(List<Pokemon> pokemons){
         this.pokeList.clear();
         this.pokeList.addAll(pokemons);
+        this.notifyDataSetChanged();
+    }
+
+    /* Tambah pokemon baru ke list */
+    public void addNewPokeToList(Pokemon pokemon){
+        this.pokeList.add(pokemon);
+        this.notifyDataSetChanged();
+    }
+
+    /* Ubah Data Pokemon berdasarkan index di List */
+    public void updateInList(int index, Pokemon pokemon){
+        this.pokeList.set(index, pokemon);
         this.notifyDataSetChanged();
     }
 

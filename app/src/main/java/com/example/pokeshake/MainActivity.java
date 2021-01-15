@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     private HomeFragment homeFragment;
 
     private TestFragment testFragment;
-    private List<Pokemon> pokeList;
+//    private List<Pokemon> pokeList;
     //sensor shake
     private ShakeTest shakeTester;
 //    private RadarChart chart;
@@ -40,17 +40,20 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.pokeList = new LinkedList<Pokemon>();
-        try {                       //load saved data
-            initSavedProfileData();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        /* loading saved data on storage */
+        List pokeList = new LinkedList<Pokemon>();
+        try {
+            initSavedProfileData();             // load Money
+            pokeList.addAll(loadPokeStorage()); // load pokemon list
         }
+        catch (JSONException e) {e.printStackTrace();}
+
+        PokeAdapter adapter = new PokeAdapter(this, pokeList);
 
         this.fragmentManager = this.getSupportFragmentManager();
         FragmentTransaction ft = this.fragmentManager.beginTransaction();
         this.homeFragment = new HomeFragment();
-        this.pokeMenuFragment = new PokeMenuFragment();
+        this.pokeMenuFragment = new PokeMenuFragment(adapter);
         this.viewFragment = new ViewFragment();
         this.testFragment = new TestFragment();
         this.shakeTester = new ShakeTest();
@@ -75,7 +78,36 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         this.loadPokeStorage();
     }
 
-    public String loadProfileData(){
+    public List loadPokeStorage() throws JSONException {
+        String data = loadPokeData();
+        List<Pokemon> pokemons = new LinkedList<Pokemon>();
+        if(data.equals("empty")){
+            JSONArray pkmnArr = new JSONArray();
+            JSONObject pkmnData = new JSONObject();
+            pkmnData.put("pokemons",pkmnArr);
+            savePokeData(pkmnData.toString());
+        }else{
+            JSONObject pkmnData = new JSONObject(data);
+            JSONArray pkmnArr = pkmnData.getJSONArray("pokemons");
+            for(int i=0 ; i<pkmnArr.length() ; i++){
+                JSONObject obj = pkmnArr.getJSONObject(i);
+                Log.d("name is:",obj.getString("name"));
+                Pokemon pkmn = new Pokemon(obj.getInt("id"),
+                        obj.getString("name"),
+                        obj.getInt("level"),
+                        obj.getInt("curExp"),
+                        obj.getInt("gRate"),
+                        obj.getString("types"));
+                pokemons.add(pkmn);
+            }
+        }
+
+        return pokemons;
+    }
+
+
+    /* Get Money Data from Device, just ignore what's inside */
+    private String loadProfileData(){
         File file = new File(this.getFilesDir(),"saved.txt");
 
         try (FileInputStream fis = new FileInputStream(file)) {
@@ -92,6 +124,25 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         }
     }
 
+    /* Get Pokemon Data from Device, just ignore what's inside */
+    private String loadPokeData(){
+        File file = new File(this.getFilesDir(),"pokemons.txt");
+
+        try (FileInputStream fis = new FileInputStream(file)) {
+            int content;
+            String msg = "";
+            while ((content = fis.read()) != -1) {
+                msg=msg+(char)content;
+            }
+            return msg;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            //ini buat testing ;)
+            return "empty";
+        }
+    }
+
     public void saveProfileData(String content){
         File file = new File(this.getFilesDir(),"saved.txt");
 
@@ -103,7 +154,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             fop.write(contentInBytes);
             fop.flush();
             fop.close();
-//            Log.d("LOCATION: ",this.getFilesDir()+"");
         } catch (IOException e) {e.printStackTrace();}
     }
 
@@ -122,23 +172,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         } catch (IOException e) {e.printStackTrace();}
     }
 
-    public String loadPokeData(){
-        File file = new File(this.getFilesDir(),"pokemons.txt");
-
-        try (FileInputStream fis = new FileInputStream(file)) {
-            int content;
-            String msg = "";
-            while ((content = fis.read()) != -1) {
-                msg=msg+(char)content;
-            }
-            return msg;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            //ini buat testing ;)
-            return "empty";
-        }
-    }
 
     @Override
     public void changePage(int page) {
@@ -224,41 +257,13 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     }
 
     @Override
-    public List<Pokemon> getPokemons(){
-        return this.pokeList;
-    }
-
-    public void loadPokeStorage() throws JSONException {
-        String data = loadPokeData();
-        List<Pokemon> pokemons = new LinkedList<Pokemon>();
-        if(data.equals("empty")){
-            JSONArray pkmnArr = new JSONArray();
-            JSONObject pkmnData = new JSONObject();
-            pkmnData.put("pokemons",pkmnArr);
-            savePokeData(pkmnData.toString());
-        }else{
-            JSONObject pkmnData = new JSONObject(data);
-            JSONArray pkmnArr = pkmnData.getJSONArray("pokemons");
-            for(int i=0 ; i<pkmnArr.length() ; i++){
-                JSONObject obj = pkmnArr.getJSONObject(i);
-                Log.d("name is:",obj.getString("name"));
-                Pokemon pkmn = new Pokemon(obj.getInt("id"),
-                                           obj.getString("name"),
-                                           obj.getInt("level"),
-                                           obj.getInt("curExp"),
-                                           obj.getInt("gRate"),
-                                           obj.getString("types"));
-                pokemons.add(pkmn);
-            }
-        }
-
-        this.pokeList.addAll(pokemons);
+    public void updateMoneyView() {
+        this.homeFragment.setMoneyTV();
     }
 
     @Override
     public void adoptPokemon(Pokemon pokemon) {
-        this.pokeList.add(pokemon);
-//        this.pokeMenuFragment.addPokemon(pokemon);
+        this.pokeMenuFragment.addPokemon(pokemon);
     }
 
     @Override
