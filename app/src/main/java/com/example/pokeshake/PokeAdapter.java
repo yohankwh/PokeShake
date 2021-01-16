@@ -27,6 +27,11 @@ public class PokeAdapter extends BaseAdapter {
         this.pokeList.addAll(pokemons);
     }
 
+    public Pokemon getPokemonByIndex(int index){
+        //blm ada null checking
+        return this.pokeList.get(index);
+    }
+
     /* Ubah seluruh isi list pokemon */
     public void update(List<Pokemon> pokemons){
         this.pokeList.clear();
@@ -84,13 +89,18 @@ public class PokeAdapter extends BaseAdapter {
         private TextView pokeNameTV;
 
         public ViewHolder(View view){
+            this.fragmentListener = (FragmentListener) view.getContext();
             this.miniPokeIV = view.findViewById(R.id.mini_poke_iv);
             this.pokeNameTV = view.findViewById(R.id.poke_name_tv);
+            this.miniPokeIV.setOnClickListener(this);
+            this.pokeNameTV.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-
+            if(view==this.miniPokeIV || view==this.pokeNameTV){
+                this.fragmentListener.changePage(3, position);
+            }
         }
 
         public void updateView(Pokemon poke, int position) throws IOException {

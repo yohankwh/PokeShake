@@ -2,6 +2,7 @@ package com.example.pokeshake;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -63,6 +64,11 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
                 .commit();
     }
 
+    @Override
+    public Pokemon getSinglePokemonByIndex(int index){//not an mvp way
+        return this.pokeMenuFragment.getPokemonByIndex(index);
+    }
+
     public void initSavedProfileData() throws JSONException {
         String saved = loadProfileData();
         if(saved.equals("empty")){
@@ -75,9 +81,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             JSONObject object = new JSONObject(saved);
             this.money = object.getInt("money");
         }
-        this.loadPokeStorage();
     }
 
+    /* Get Pokemon Data from Device as LISTS, just ignore what's inside */
     public List loadPokeStorage() throws JSONException {
         String data = loadPokeData();
         List<Pokemon> pokemons = new LinkedList<Pokemon>();
@@ -101,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
                 pokemons.add(pkmn);
             }
         }
-
         return pokemons;
     }
 
@@ -174,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
 
     @Override
-    public void changePage(int page) {
+    public void changePage(int page, int pokeIdx) {
         FragmentTransaction ft = this.fragmentManager.beginTransaction();
         if (page == 1) {
             if(this.homeFragment.isAdded()){
@@ -211,6 +216,11 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
                 ft.hide(this.shakeTester);
             }
         } else if (page == 3) {
+            if(pokeIdx!=-1){
+                Bundle bundle = new Bundle();
+                bundle.putInt("pokeIdx",pokeIdx);
+                this.viewFragment.setArguments(bundle);
+            }
             if(this.viewFragment.isAdded()){
                 ft.show(this.viewFragment);
             }else{

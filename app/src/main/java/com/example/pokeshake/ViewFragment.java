@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.RadarChart;
@@ -22,13 +23,31 @@ import java.util.ArrayList;
 
 
 public class ViewFragment extends Fragment implements View.OnClickListener {
+    private FragmentListener fragmentListener;
     private RadarChart radarChart;
+    protected Pokemon pokemon;
+    int pokeIdx;
+
     String[] labels = {"HP", "Defense", "Sp.Attack", "Sp.Defense", "Attack"};
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            this.pokeIdx = bundle.getInt("pokeID");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_pokemon, container, false);
+        Pokemon pkmn = this.fragmentListener.getSinglePokemonByIndex(this.pokeIdx);
+
+        //Todo: Set TextViews & Images with Pokemon pkmn data
+
         this.radarChart = view.findViewById(R.id.radarChart);
 
         RadarDataSet dataSet = new RadarDataSet(dataValue(), "Pokemon");
@@ -63,15 +82,14 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
 
     }
 
-
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof FragmentListener) {
-//            this.fragmentListener = (FragmentListener) context;
-//        } else {
-//            throw new ClassCastException(context.toString()
-//                    + "must implement FragmentListener");
-//        }
-//    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof FragmentListener) {
+            this.fragmentListener = (FragmentListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + "must implement FragmentListener");
+        }
+    }
 }

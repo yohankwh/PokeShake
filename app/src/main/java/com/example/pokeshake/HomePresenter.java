@@ -24,14 +24,9 @@ import java.util.Random;
 
 public class HomePresenter {
     private FragmentListener fragmentListener;
-    private FrameLayout progressBarHolder;
 
     private long mLastClickTime = 0;
-    private Button testBtn;
     private Random rand;
-    private AlphaAnimation inAnimation;
-    private AlphaAnimation outAnimation;
-    private String myLog = "myLog";
 
     private boolean isClaiming; //in java default is false
 
@@ -44,7 +39,7 @@ public class HomePresenter {
 
     public boolean getIsClaiming(){return this.isClaiming;}
 
-    public void changePage(int pagenum){this.fragmentListener.changePage(pagenum);}
+    public void changePage(int pagenum){this.fragmentListener.changePage(pagenum, -1);}
 
     public void claimPokemon(Context ctx){
         if(!this.isClaiming) {//if not claiming (prevents spam click on claiming)

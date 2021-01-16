@@ -129,10 +129,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
             builderAlert.show();
         }
         else if(view == this.testBtn){
-            this.fragmentListener.changePage(3);
+            this.presenter.changePage(3);
         }
         else if(view == this.shakeBtn){
-            this.fragmentListener.changePage(4);
+            this.presenter.changePage(4);
         }
     }
 
