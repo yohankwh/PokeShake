@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     private FragmentManager fragmentManager;
     private PokeMenuFragment pokeMenuFragment;
     private ViewFragment viewFragment;
+    private TrainFragment trainFragment;
     private HomeFragment homeFragment;
 
     private TestFragment testFragment;
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         this.fragmentManager = this.getSupportFragmentManager();
         FragmentTransaction ft = this.fragmentManager.beginTransaction();
         this.homeFragment = new HomeFragment();
+        this.trainFragment = new TrainFragment();
         this.pokeMenuFragment = new PokeMenuFragment(adapter);
         this.viewFragment = new ViewFragment();
         this.testFragment = new TestFragment();
@@ -198,6 +200,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.shakeTester.isAdded()){
                 ft.hide(this.shakeTester);
             }
+            if(this.trainFragment.isAdded()){
+                ft.hide(this.trainFragment);
+            }
         } else if (page == 2) {
             if(this.pokeMenuFragment.isAdded()){
                 ft.show(this.pokeMenuFragment);
@@ -214,6 +219,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             }
             if(this.shakeTester.isAdded()){
                 ft.hide(this.shakeTester);
+            }
+            if(this.trainFragment.isAdded()){
+                ft.hide(this.trainFragment);
             }
         } else if (page == 3) {
             if(pokeIdx!=-1){
@@ -237,6 +245,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.shakeTester.isAdded()){
                 ft.hide(this.shakeTester);
             }
+            if(this.trainFragment.isAdded()){
+                ft.hide(this.trainFragment);
+            }
         }else if (page == 4) {
             if(this.shakeTester.isAdded()){
                 ft.show(this.shakeTester);
@@ -253,6 +264,34 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             }
             if(this.viewFragment.isAdded()){
                 ft.hide(this.viewFragment);
+            }
+            if(this.trainFragment.isAdded()){
+                ft.hide(this.trainFragment);
+            }
+        }else if (page == 5) {
+            if(pokeIdx!=-1){
+                Bundle bundle = new Bundle();
+                bundle.putInt("pokeIdx",pokeIdx);
+                this.trainFragment.setArguments(bundle);
+            }
+            if(this.trainFragment.isAdded()){
+                ft.show(this.trainFragment);
+            }else{
+                ft.add(R.id.fragment_container, this.trainFragment)
+                        .addToBackStack(null);
+            }
+
+            if(this.homeFragment.isAdded()){
+                ft.hide(this.homeFragment);
+            }
+            if(this.testFragment.isAdded()){
+                ft.hide(this.testFragment);
+            }
+            if(this.viewFragment.isAdded()){
+                ft.hide(this.viewFragment);
+            }
+            if(this.shakeTester.isAdded()){
+                ft.hide(this.shakeTester);
             }
         }
         ft.commit();

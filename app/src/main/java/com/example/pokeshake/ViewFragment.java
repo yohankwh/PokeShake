@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -28,6 +29,9 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
     protected Pokemon pokemon;
     int pokeIdx;
 
+    private Button trainBtn;
+    private Button releaseBtn;
+
     String[] labels = {"HP", "Defense", "Sp.Attack", "Sp.Defense", "Attack"};
 
     @Override
@@ -44,6 +48,11 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_pokemon, container, false);
+        this.trainBtn = view.findViewById(R.id.btn_train);
+        this.trainBtn.setOnClickListener(this);
+        this.releaseBtn = view.findViewById(R.id.btn_release);
+        this.releaseBtn.setOnClickListener(this);
+
         Pokemon pkmn = this.fragmentListener.getSinglePokemonByIndex(this.pokeIdx);
 
         //Todo: Set TextViews & Images with Pokemon pkmn data
@@ -76,10 +85,11 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
         return temp;
     }
 
-
     @Override
     public void onClick(View v) {
-
+        if(v == this.trainBtn){
+            this.fragmentListener.changePage(5, this.pokeIdx);
+        }
     }
 
     @Override

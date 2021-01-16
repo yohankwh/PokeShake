@@ -41,7 +41,7 @@
                             android:layout_weight="3">
 
                                 <ImageView
-                                    android:id="@+id/iv_poke_img"
+                                    android:id="@+id/train_poke_iv"
                                     android:layout_gravity="center_horizontal"
                                     android:layout_width="@dimen/image_size"
                                     android:layout_height="@dimen/image_size"
@@ -55,6 +55,7 @@
                             android:layout_weight="8"
                             android:orientation="vertical">
                                 <TextView
+                                    android:id="@+id/train_pokename_tv"
                                     android:textAlignment="center"
                                     android:textSize="20dp"
                                     android:padding="5dp"
@@ -71,7 +72,7 @@
                                             android:padding="10dp"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:text="<Nanti Ganti Progress Bar>">
+                                            android:text="Nanti Ganti Progress Bar">
                                         </TextView>
                                 </LinearLayout>
                                 <TextView

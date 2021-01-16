@@ -99,7 +99,7 @@ public class PokeAdapter extends BaseAdapter {
         @Override
         public void onClick(View view) {
             if(view==this.miniPokeIV || view==this.pokeNameTV){
-                this.fragmentListener.changePage(3, position);
+                this.fragmentListener.changePage(3, this.position);
             }
         }
 
