@@ -7,5 +7,6 @@ public interface FragmentListener {
     public void updateMoneyView();
     public void adoptPokemon(Pokemon pokemon);
     public Pokemon getSinglePokemonByIndex(int index);
+    public void sendBlueprint(PokeBlueprint blueprint);
     void closeApplication();
 }

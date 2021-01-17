@@ -100,12 +100,21 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             for(int i=0 ; i<pkmnArr.length() ; i++){
                 JSONObject obj = pkmnArr.getJSONObject(i);
                 Log.d("name is:",obj.getString("name"));
+
+                JSONArray stats = obj.getJSONArray("stats");
+                int[] statsArr = new int[stats.length()];
+                for(int s=0; s<stats.length(); s++){
+                    statsArr[s] = stats.getInt(s);
+                }
+
                 Pokemon pkmn = new Pokemon(obj.getInt("id"),
                         obj.getString("name"),
                         obj.getInt("level"),
                         obj.getInt("curExp"),
                         obj.getInt("gRate"),
-                        obj.getString("types"));
+                        obj.getString("types"),
+                        obj.getInt("evolID"),
+                        statsArr);
                 pokemons.add(pkmn);
             }
         }
@@ -179,6 +188,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         } catch (IOException e) {e.printStackTrace();}
     }
 
+    @Override
+    public void sendBlueprint(PokeBlueprint blueprint){
+        this.trainFragment.receiveBlueprint(blueprint);
+    }
 
     @Override
     public void changePage(int page, int pokeIdx) {

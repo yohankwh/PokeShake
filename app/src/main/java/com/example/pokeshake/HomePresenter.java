@@ -3,6 +3,7 @@ package com.example.pokeshake;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -111,7 +112,8 @@ public class HomePresenter {
                                                                             pkmnType += "#" + type.getString("name");
                                                                         }
 
-                                                                        Pokemon newPoke = new Pokemon(pokeID, name, 0, 0, growth_rate, pkmnType);
+                                                                        Pokemon newPoke = new Pokemon(pokeID, name, 0, 0,
+                                                                                          growth_rate, pkmnType, pokeEvolID, statsArr);
 
                                                                         fragmentListener.adoptPokemon(newPoke);
                                                                         int money = fragmentListener.getMoney();
@@ -137,6 +139,10 @@ public class HomePresenter {
                                                             }, new Response.ErrorListener() {
                                                         @Override
                                                         public void onErrorResponse(VolleyError error) {
+                                                            //Todo: Error Handling
+                                                            Log.d("Claim deepest","Too long bro, timeout");
+                                                            //show sneaker message: Connection Problem
+                                                            isClaiming = false;
                                                         }
                                                     }
                                                     );
@@ -148,6 +154,10 @@ public class HomePresenter {
                                         }, new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
+                                        //Todo: Error Handling
+                                        Log.d("Claim deeper","Too long bro, timeout");
+                                        //show sneaker message: Connection Problem
+                                        isClaiming = false;
                                     }
                                 }
                                 );
@@ -160,6 +170,10 @@ public class HomePresenter {
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    //Todo: Error Handling
+                    Log.d("Claim outer","Too long bro, timeout");
+                    //show sneaker message: Connection Problem
+                    isClaiming = false;
                 }
             }
             );//end of string request 1

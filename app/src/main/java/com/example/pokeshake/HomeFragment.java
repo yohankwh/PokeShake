@@ -141,6 +141,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     }
 
     /*Progress Bar on Adopt Egg*/
+    //TrainFragment has the same class, might change to own class?
     private class MyTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -166,8 +167,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                for (int i = 0; i < 3; i++) {
-                    Log.d(myLog, "Emulating some task.. Step " + i);
+                while(presenter.getIsClaiming()){
                     TimeUnit.SECONDS.sleep(1);
                 }
             } catch (InterruptedException e) {
