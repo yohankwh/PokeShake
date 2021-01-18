@@ -68,6 +68,6 @@ public class Pokemon {
     public void setCurExp(int curExp) {this.curExp = curExp;}
 
     public void train(){
-        this.curExp+=5;
+        this.curExp+=20;
     }
 }
