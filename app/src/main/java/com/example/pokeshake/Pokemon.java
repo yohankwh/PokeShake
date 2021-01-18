@@ -53,6 +53,8 @@ public class Pokemon {
 
     public int getEvolID(){return this.evolID;}
 
+    public int getGrowthRate() {return growthRate;}
+
     public void setID(int id){ this.id = id; }
 
     public void setName(String name) {this.name = name;}
