@@ -13,5 +13,6 @@ public interface FragmentListener {
     public void savePokeChanges() throws JSONException;
     public void addMoney() throws JSONException;
     public void releasePokemon(int index) throws JSONException;
+    public void saveTrainingData(Pokemon pokemon);
     void closeApplication();
 }

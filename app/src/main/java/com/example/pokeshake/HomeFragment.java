@@ -1,39 +1,19 @@
 package com.example.pokeshake;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
@@ -75,13 +55,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         this.progressBarHolder = view.findViewById(R.id.progressBarHolder);
 
-        //sensor test
-        this.shakeBtn = view.findViewById(R.id.btnTestShakePage);
-        this.shakeBtn.setOnClickListener(this);
-
-        this.testBtn = view.findViewById(R.id.btnTestPage);
-        this.testBtn.setOnClickListener(this);
-
         view.setOnClickListener(this);
         return view;
     }
@@ -104,9 +77,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 this.presenter.claimPokemon(this.getContext()); //claim the pokemon
                 MyTask mt = new MyTask(); //show loading while claiming
                 mt.execute();
-                try {
-                    this.fragmentListener.savePokeChanges();
-                } catch (JSONException e) {e.printStackTrace();}
             }
         }
         else if(view.getId() == this.pokeMenuBtn.getId()){

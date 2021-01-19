@@ -1,8 +1,6 @@
 package com.example.pokeshake;
 
 import android.content.Context;
-import android.hardware.SensorManager;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -17,7 +15,6 @@ import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Random;
 
 public class TrainPresenter {
     private FragmentListener fragmentListener;
@@ -69,7 +66,6 @@ public class TrainPresenter {
             //1st Request: request to get the Evolution Chain Array
             RequestQueue queue1 = Volley.newRequestQueue(ctx);
             String evolChainURL = "https://pokeapi.co/api/v2/evolution-chain/" + evolID + "/";
-            Log.d("evol chain url is ",evolChainURL);
             StringRequest evolChainRequest = new StringRequest(Request.Method.GET, evolChainURL,
                     new Response.Listener<String>() {
                         @Override
@@ -81,8 +77,6 @@ public class TrainPresenter {
                                 JSONArray tempArray;
 
                                 while(checkID != curID){//checks whether it's the last pokemon form :)
-                                    Log.d("checkidvscurid",checkID+" "+curID);
-                                    Log.d("evolchain dat",evolChain.toString());
                                     URI uri = new URI(evolChain.getJSONObject("species").getString("url"));
                                     //Pecahin dari URL jadi dapet ID Pokemon
                                     String[] segments = uri.getPath().split("/");
@@ -106,11 +100,9 @@ public class TrainPresenter {
                                     int nxtLvlEvol = evolChain.getJSONArray("evolution_details")
                                                     .getJSONObject(0)
                                                     .optInt("min_level",-1);
-                                    Log.d("nxtlevlevol",nxtLvlEvol+" HERE U GO LEVEL");
                                     //Request next pokemon data
                                     RequestQueue queue2 = Volley.newRequestQueue(ctx);
                                     String nextPokeData = "https://pokeapi.co/api/v2/pokemon/" + (curID+1) + "/";
-                                    Log.d("link is ",nextPokeData);
                                     StringRequest nextPokeRequest = new StringRequest(Request.Method.GET, nextPokeData,
                                             new Response.Listener<String>() {
                                                 @Override
@@ -131,7 +123,6 @@ public class TrainPresenter {
                                                         }
                                                         blueprint = new PokeBlueprint(nextId, nextName, nextTypes, nextStats, nxtLvlEvol);
                                                         fragmentListener.sendBlueprint(blueprint);
-                                                        Log.d("DONE WTF","YEAH DONE PLS");
                                                     }
                                                     catch (JSONException e) {e.printStackTrace();}
                                                     fetchingData = false;

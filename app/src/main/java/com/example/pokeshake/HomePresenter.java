@@ -4,21 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
-import android.view.animation.AlphaAnimation;
-import android.widget.Button;
-import android.widget.FrameLayout;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Random;
@@ -131,6 +125,7 @@ public class HomePresenter {
                                                                         builderAlert.show();
 
                                                                         //kalo udah beres baru set flag false lagi
+                                                                        fragmentListener.savePokeChanges();
                                                                         isClaiming = false;
                                                                     } catch (JSONException e) {
                                                                         e.printStackTrace();

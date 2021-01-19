@@ -1,17 +1,5 @@
 package com.example.pokeshake;
 
-import android.content.Context;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class Pokemon {
     private int evolID;
     private int id;
@@ -81,7 +69,7 @@ public class Pokemon {
         if(isEgg()){
             this.curExp+=10;
         }else{
-            this.curExp+=100;
+            this.curExp+=30;
         }
     }
 

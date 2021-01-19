@@ -1,7 +1,6 @@
 package com.example.pokeshake;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -9,7 +8,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +15,12 @@ import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,11 +28,12 @@ import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.SENSOR_SERVICE;
 
-public class TrainFragment extends Fragment implements SensorEventListener {
+public class TrainFragment extends Fragment implements SensorEventListener, View.OnClickListener {
     private FragmentListener fragmentListener;
     private TrainPresenter presenter;
     protected Pokemon pokemon;
     protected PokeBlueprint blueprint;
+    private TextView endTraining;
     private TextView pokeName;
     private ImageView pokeImage;
     private TextView expPool;
@@ -74,13 +74,14 @@ public class TrainFragment extends Fragment implements SensorEventListener {
         View view = inflater.inflate(R.layout.fragment_train, container, false);
 
         this.pokemon = this.fragmentListener.getSinglePokemonByIndex(this.pokeIdx);
-        Log.d("poke url wat",this.pokemon.getID()+"  sad");
         this.presenter = new TrainPresenter(this.fragmentListener,
                                             this.pokemon.getLevel(),
                                             this.pokemon.getGrowthRate());
 
         //Todo: Set TextViews & Images with Pokemon pkmn data
         this.loadingCircleHolder = view.findViewById(R.id.loadingCircleHolder);
+        this.endTraining = view.findViewById(R.id.endTraining);
+        this.endTraining.setOnClickListener(this);
         this.pokeName = view.findViewById(R.id.train_pokename_tv);
         this.pokeImage = view.findViewById(R.id.train_poke_iv);
         this.curExp = view.findViewById(R.id.curexp_train_tv);
@@ -129,7 +130,6 @@ public class TrainFragment extends Fragment implements SensorEventListener {
 
     public void receiveBlueprint(PokeBlueprint blueprint){
         this.blueprint = blueprint;
-        Log.d("blueprint",this.blueprint.getId()+"");
     }
 
     @Override
@@ -150,7 +150,6 @@ public class TrainFragment extends Fragment implements SensorEventListener {
                         mLastShakeTime = curTime;
                         boolean wasEgg = this.pokemon.isEgg();
                         this.presenter.addExp(this.pokemon);
-                        Log.d("actual name :",this.pokemon.getID()+"");
 
                         if(!this.pokemon.isEgg()){
                             this.curExp.setText(this.pokemon.getCurExp()+"");
@@ -168,7 +167,6 @@ public class TrainFragment extends Fragment implements SensorEventListener {
                             //if hatch
                             if(this.pokemon.isEgg()!=wasEgg){
                                 attachPokeData();
-                                Log.d("hatch is egg part","yea");
                             }
                             //if evolve (1st Condition: if actually has evolution | 2nd: if current level is level needed for evol)
                             if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= this.blueprint.nextLevelEvol){
@@ -176,7 +174,6 @@ public class TrainFragment extends Fragment implements SensorEventListener {
                                 evolvePokemon();
                                 attachPokeData();
                                 fetchTrainData();
-                                Log.d("evolve is egg part","yea");
                             }
                         }
                     }
@@ -243,6 +240,16 @@ public class TrainFragment extends Fragment implements SensorEventListener {
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+
+    @Override
+    public void onClick(View view) {
+        if (view == this.endTraining) {
+            this.fragmentListener.saveTrainingData(this.pokemon);
+
+            this.fragmentListener.changePage(3, this.pokeIdx);
+            getActivity().onBackPressed();
+        }
+    }
 
     private class LoadingDisplay extends AsyncTask<Void, Void, Void> {
 

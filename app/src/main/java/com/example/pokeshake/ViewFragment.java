@@ -1,24 +1,16 @@
 package com.example.pokeshake;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.view.ViewGroup.LayoutParams;
-
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -32,7 +24,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,9 +95,10 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
 
     private ArrayList<RadarEntry> dataValue(Pokemon pkmn){
         ArrayList<RadarEntry> temp = new ArrayList<>();
-        for(int stat : pkmn.getStats()){
-            temp.add(new RadarEntry(stat));
-        }
+        if(!pkmn.isEgg()){
+            for(int stat : pkmn.getStats()){
+                temp.add(new RadarEntry(stat));
+            }}
         return temp;
     }
 

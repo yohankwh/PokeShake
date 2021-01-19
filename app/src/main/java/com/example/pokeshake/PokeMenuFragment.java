@@ -1,9 +1,6 @@
 package com.example.pokeshake;
-
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +10,6 @@ import androidx.fragment.app.Fragment;
 
 import org.json.JSONException;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class PokeMenuFragment extends Fragment implements View.OnClickListener{

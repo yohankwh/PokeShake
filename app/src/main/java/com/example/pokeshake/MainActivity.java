@@ -1,19 +1,13 @@
 package com.example.pokeshake;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.app.job.JobInfo;
 import android.os.Bundle;
-import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -21,7 +15,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.github.mikephil.charting.charts.RadarChart;
 
 public class MainActivity extends AppCompatActivity implements FragmentListener{
     private int money;
@@ -97,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             JSONArray pkmnArr = pkmnData.getJSONArray("pokemons");
             for(int i=0 ; i<pkmnArr.length() ; i++){
                 JSONObject obj = pkmnArr.getJSONObject(i);
-                Log.d("name is:",obj.getString("name"));
 
                 JSONArray stats = obj.getJSONArray("stats");
                 int[] statsArr = new int[stats.length()];
@@ -200,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             fop.write(contentInBytes);
             fop.flush();
             fop.close();
-//            Log.d("LOCATION: ",this.getFilesDir()+"");
         } catch (IOException e) {e.printStackTrace();}
     }
 
@@ -224,7 +215,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             this.changePage(3, this.trainFragment.getCurrentPokeIdx());
             super.onBackPressed();
 //            this.changePage(1, -1);
-            Log.d("Through here","bro");
         }else if(f instanceof ViewFragment) {
             this.changePage(2, -1);
             super.onBackPressed();
@@ -356,6 +346,14 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     public void releasePokemon(int index) throws JSONException {
         this.pokeMenuFragment.releasePokemon(index);
         savePokeChanges();
+    }
+
+    @Override
+    public void saveTrainingData(Pokemon pokemon) {
+        this.pokeMenuFragment.updatePokeInList(this.trainFragment.getCurrentPokeIdx(), pokemon);
+        try {this.storePokemonData();}
+        catch (JSONException e) {e.printStackTrace();}
+        this.viewFragment.attachPokeData(pokemon);
     }
 
     @Override
