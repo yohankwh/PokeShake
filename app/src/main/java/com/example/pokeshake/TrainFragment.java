@@ -167,10 +167,14 @@ public class TrainFragment extends Fragment implements SensorEventListener, View
                         }
 
                         if(this.presenter.isLeveledUp()){
+                            if(!this.pokemon.isEgg()){
+                                try {
+                                    this.fragmentListener.addMoney();
+                                } catch (JSONException e) {e.printStackTrace();}
+                            }
+
                             this.pokeLvl.setText("Level "+this.pokemon.getLevel());
-                            //masih: kayak pichu kan gabisa evolve, karena di if if in, dia bisa keupdate sih, tapi statnya ga ikut
-                            //karena updatenya kan lewat attachpokedata kayaknya
-                            //jadi nanti mungkin kasi this.pokestats.set dll gitu aja
+
                             this.presenter.resetLeveledUp();
 
                             //if hatch

@@ -159,6 +159,7 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
                 this.fragmentListener.releasePokemon(this.pokeIdx);
             } catch (JSONException e) {e.printStackTrace();}
             this.fragmentListener.changePage(1, -1);
+            getActivity().onBackPressed();
         }
     }
 

@@ -358,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
     @Override
     public void addMoney() throws JSONException {
-        this.money+=10;
+        this.money+=3;
         this.homeFragment.setMoneyTV();
         this.updateMoneyChanges();
     }
