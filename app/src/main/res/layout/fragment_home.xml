@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
@@ -24,7 +24,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_marginLeft="90dp"
             android:layout_marginRight="90dp">
@@ -41,8 +41,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="50dp">
 
                 <Button
                     android:id="@+id/btnAdoptEgg"
@@ -77,26 +78,6 @@
                     android:textColor="@color/black"
                     android:textAllCaps="false"/>
 
-                <Button
-                    android:id="@+id/btnTestPage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_background"
-                    android:layout_marginTop="20dp"
-                    android:backgroundTint="@color/white"
-                    android:text="TESTING"
-                    android:textColor="@color/black"
-                    android:textAllCaps="false"/>
-
-                <Button
-                    android:id="@+id/btnTestShakePage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_background"
-                    android:layout_marginTop="20dp"
-                    android:backgroundTint="@color/white"
-                    android:text="Shaker testing"
-                    android:textAllCaps="false"/>
             </LinearLayout>
         </LinearLayout>
 

@@ -41,16 +41,22 @@ public class PokeMenuFragment extends Fragment implements View.OnClickListener{
         return this.adapter.getPokemonByIndex(index);
     }
 
+    public List<Pokemon> getAllPokemon(){ return this.adapter.getPokeList(); }
+
     public void updateList(List<Pokemon> pokemons){
         this.adapter.update(pokemons);
     }
 
-    public void addPokemon(Pokemon pokemon){
+    public void addPokemon(Pokemon pokemon) throws JSONException {
         this.adapter.addNewPokeToList(pokemon);
     }
 
     public void updatePokeInList(int index, Pokemon pokemon){
         this.adapter.updateInList(index, pokemon);
+    }
+
+    public void releasePokemon(int index){
+        this.adapter.releaseInList(index);
     }
 
     @Override

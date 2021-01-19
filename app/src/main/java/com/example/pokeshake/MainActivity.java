@@ -31,12 +31,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     private TrainFragment trainFragment;
     private HomeFragment homeFragment;
 
-    private TestFragment testFragment;
-//    private List<Pokemon> pokeList;
-    //sensor shake
-    private ShakeTest shakeTester;
-//    private RadarChart chart;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +52,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         this.trainFragment = new TrainFragment();
         this.pokeMenuFragment = new PokeMenuFragment(adapter);
         this.viewFragment = new ViewFragment();
-        this.testFragment = new TestFragment();
-        this.shakeTester = new ShakeTest();
 
         ft.add(R.id.fragment_container, this.homeFragment)
                 .addToBackStack(null)
@@ -71,12 +63,18 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         return this.pokeMenuFragment.getPokemonByIndex(index);
     }
 
+    public void updateMoneyChanges() throws JSONException {
+        JSONObject money = new JSONObject();
+        money.put("money",this.money);
+        saveProfileData(money.toString());
+    }
+
     public void initSavedProfileData() throws JSONException {
         String saved = loadProfileData();
         if(saved.equals("empty")){
             JSONObject saveObj = new JSONObject();
-            this.money = 5;//TEMPORARY VALUE: 5
-            saveObj.put("money", 5);
+            this.money = 10;//TEMPORARY VALUE: 5
+            saveObj.put("money", this.money);
 
             saveProfileData(saveObj.toString());
         }else{
@@ -121,6 +119,25 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         return pokemons;
     }
 
+    public void storePokemonData() throws JSONException {
+        JSONObject pokemons = new JSONObject();
+        JSONArray pokeArray = new JSONArray();
+        List<Pokemon> pokeList = this.pokeMenuFragment.getAllPokemon();
+        for(int i=0 ; i<pokeList.size() ; i++){
+            Pokemon poke = pokeList.get(i);
+            JSONObject pokeObj = new JSONObject();
+            pokeObj.put("id",poke.getID());
+            pokeObj.put("name",poke.getActualName());
+            pokeObj.put("level",poke.getLevel());
+            pokeObj.put("curExp",poke.getCurExp());
+            pokeObj.put("gRate",poke.getGrowthRate());
+            pokeObj.put("types",poke.getTypes());
+            pokeObj.put("evolID",poke.getEvolID());
+            pokeObj.put("stats",new JSONArray(poke.getStats()));
+            pokeArray.put(i, pokeObj);
+        }
+        savePokeData(pokemons.put("pokemons",pokeArray).toString());
+    }
 
     /* Get Money Data from Device, just ignore what's inside */
     private String loadProfileData(){
@@ -154,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
         } catch (IOException e) {
             e.printStackTrace();
-            //ini buat testing ;)
             return "empty";
         }
     }
@@ -200,6 +216,10 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         if (f instanceof TrainFragment) {
             Pokemon pkmn = this.trainFragment.getPokemon();
             this.pokeMenuFragment.updatePokeInList(this.trainFragment.getCurrentPokeIdx(), pkmn);
+
+            try {this.storePokemonData();}
+            catch (JSONException e) {e.printStackTrace();}
+
             this.viewFragment.attachPokeData(pkmn);
             this.changePage(3, this.trainFragment.getCurrentPokeIdx());
             super.onBackPressed();
@@ -234,9 +254,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.viewFragment.isAdded()){
                 ft.hide(this.viewFragment);
             }
-            if(this.shakeTester.isAdded()){
-                ft.hide(this.shakeTester);
-            }
             if(this.trainFragment.isAdded()){
                 ft.hide(this.trainFragment);
             }
@@ -250,12 +267,6 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
 
             if(this.homeFragment.isAdded()){
                 ft.hide(this.homeFragment);
-            }
-            if(this.testFragment.isAdded()){
-                ft.hide(this.testFragment);
-            }
-            if(this.shakeTester.isAdded()){
-                ft.hide(this.shakeTester);
             }
             if(this.trainFragment.isAdded()){
                 ft.hide(this.trainFragment);
@@ -279,34 +290,8 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.homeFragment.isAdded()){
                 ft.hide(this.homeFragment);
             }
-            if(this.testFragment.isAdded()){
-                ft.hide(this.testFragment);
-            }
-            if(this.shakeTester.isAdded()){
-                ft.hide(this.shakeTester);
-            }
             if(this.pokeMenuFragment.isAdded()){
                 ft.hide(this.pokeMenuFragment);
-            }
-            if(this.trainFragment.isAdded()){
-                ft.hide(this.trainFragment);
-            }
-        }else if (page == 4) {
-            if(this.shakeTester.isAdded()){
-                ft.show(this.shakeTester);
-            }else{
-                ft.add(R.id.fragment_container, this.shakeTester)
-                        .addToBackStack(null);
-            }
-
-            if(this.homeFragment.isAdded()){
-                ft.hide(this.homeFragment);
-            }
-            if(this.testFragment.isAdded()){
-                ft.hide(this.testFragment);
-            }
-            if(this.viewFragment.isAdded()){
-                ft.hide(this.viewFragment);
             }
             if(this.trainFragment.isAdded()){
                 ft.hide(this.trainFragment);
@@ -330,14 +315,8 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.homeFragment.isAdded()){
                 ft.hide(this.homeFragment);
             }
-            if(this.testFragment.isAdded()){
-                ft.hide(this.testFragment);
-            }
             if(this.viewFragment.isAdded()){
                 ft.hide(this.viewFragment);
-            }
-            if(this.shakeTester.isAdded()){
-                ft.hide(this.shakeTester);
             }
         }
         ft.commit();
@@ -347,8 +326,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     public int getMoney() {return this.money;}
 
     @Override
-    public void updateMoney(int money) {
+    public void updateMoney(int money) throws JSONException {
         this.money = money;
+        this.updateMoneyChanges();
     }
 
     @Override
@@ -357,8 +337,13 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     }
 
     @Override
-    public void adoptPokemon(Pokemon pokemon) {
+    public void adoptPokemon(Pokemon pokemon) throws JSONException {
         this.pokeMenuFragment.addPokemon(pokemon);
+    }
+
+    @Override
+    public void savePokeChanges() throws JSONException {
+        this.storePokemonData();
     }
 
     @Override
@@ -367,5 +352,16 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         this.finish();
     }
 
+    @Override
+    public void releasePokemon(int index) throws JSONException {
+        this.pokeMenuFragment.releasePokemon(index);
+        savePokeChanges();
+    }
 
+    @Override
+    public void addMoney() throws JSONException {
+        this.money+=10;
+        this.homeFragment.setMoneyTV();
+        this.updateMoneyChanges();
+    }
 }

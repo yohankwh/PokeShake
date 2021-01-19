@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -50,6 +52,13 @@ public class PokeAdapter extends BaseAdapter {
         this.pokeList.set(index, pokemon);
         this.notifyDataSetChanged();
     }
+
+    public void releaseInList(int index) {
+        this.pokeList.remove(index);
+        this.notifyDataSetChanged();
+    }
+
+    public List<Pokemon> getPokeList() { return pokeList; }
 
     @Override
     public int getCount() {return this.pokeList.size();}
@@ -119,4 +128,5 @@ public class PokeAdapter extends BaseAdapter {
             }
         }
     }
+
 }

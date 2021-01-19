@@ -62,6 +62,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
         this.moneyTV = view.findViewById(R.id.money_tv);
         setMoneyTV();
+        this.moneyTV.setOnClickListener(this);
 
         this.adoptBtn = view.findViewById(R.id.btnAdoptEgg);
         this.adoptBtn.setOnClickListener(this);
@@ -103,6 +104,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 this.presenter.claimPokemon(this.getContext()); //claim the pokemon
                 MyTask mt = new MyTask(); //show loading while claiming
                 mt.execute();
+                try {
+                    this.fragmentListener.savePokeChanges();
+                } catch (JSONException e) {e.printStackTrace();}
             }
         }
         else if(view.getId() == this.pokeMenuBtn.getId()){
@@ -133,6 +137,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         }
         else if(view == this.shakeBtn){
             this.presenter.changePage(4);
+        }else if(view == this.moneyTV){
+            try {
+                this.fragmentListener.addMoney();
+            } catch (JSONException e) { e.printStackTrace();}
         }
     }
 

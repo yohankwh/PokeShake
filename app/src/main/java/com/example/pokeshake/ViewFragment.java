@@ -31,6 +31,7 @@ import com.github.mikephil.charting.data.RadarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -84,6 +85,8 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
         this.type2 = view.findViewById(R.id.tv_type_2);
         this.trainBtn = view.findViewById(R.id.btn_train);
         this.trainBtn.setOnClickListener(this);
+        this.releaseBtn = view.findViewById(R.id.btn_release);
+        this.releaseBtn.setOnClickListener(this);
         this.releaseBtn = view.findViewById(R.id.btn_release);
         this.releaseBtn.setOnClickListener(this);
         this.name = view.findViewById(R.id.tv_poke_name);
@@ -159,6 +162,11 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         if(v == this.trainBtn){
             this.fragmentListener.changePage(5, this.pokeIdx);
+        }else if(v== this.releaseBtn){
+            try {
+                this.fragmentListener.releasePokemon(this.pokeIdx);
+            } catch (JSONException e) {e.printStackTrace();}
+            this.fragmentListener.changePage(1, -1);
         }
     }
 
@@ -176,6 +184,9 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
     private void setTVStyling(TextView tv, String type){
         ColorStateList colorStateList;
         switch(type) {
+            case "bug":
+                colorStateList = ContextCompat.getColorStateList(getContext(), R.color.type_bug);
+            break;
             case "dark":
                 colorStateList = ContextCompat.getColorStateList(getContext(), R.color.type_dark);
                 break;

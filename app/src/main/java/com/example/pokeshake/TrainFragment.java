@@ -39,6 +39,13 @@ public class TrainFragment extends Fragment implements SensorEventListener {
     private TextView expPool;
     private TextView curExp;
     private TextView pokeLvl;
+    private TextView hpStat;
+    private TextView atkStat;
+    private TextView defStat;
+    private TextView spAtkStat;
+    private TextView spDefStat;
+    private TextView speedStat;
+
     private FrameLayout loadingCircleHolder;
     private int pokeIdx;
 
@@ -79,6 +86,13 @@ public class TrainFragment extends Fragment implements SensorEventListener {
         this.curExp = view.findViewById(R.id.curexp_train_tv);
         this.pokeLvl = view.findViewById(R.id.train_pokelvl_tv);
         this.expPool = view.findViewById(R.id.exppool_train_tv);
+        //:( banyak beud
+        this.hpStat = view.findViewById(R.id.hp_train_tv);
+        this.atkStat = view.findViewById(R.id.atk_train_tv);
+        this.defStat = view.findViewById(R.id.def_train_tv);
+        this.spAtkStat = view.findViewById(R.id.spatk_train_tv);
+        this.spDefStat = view.findViewById(R.id.spdef_train_tv);
+        this.speedStat = view.findViewById(R.id.speed_train_tv);
 
         attachPokeData();
 
@@ -132,36 +146,38 @@ public class TrainFragment extends Fragment implements SensorEventListener {
                         Math.pow(y, 2) +
                         Math.pow(z, 2)) - SensorManager.GRAVITY_EARTH;
                 if (acceleration > SHAKE_THRESHOLD) { //if device is s h o o k
-                    mLastShakeTime = curTime;
-                    boolean wasEgg = this.pokemon.isEgg();
-                    this.presenter.addExp(this.pokemon);
-                    Log.d("actual name :",this.pokemon.getID()+"");
+                    if(!this.presenter.isFetching()){
+                        mLastShakeTime = curTime;
+                        boolean wasEgg = this.pokemon.isEgg();
+                        this.presenter.addExp(this.pokemon);
+                        Log.d("actual name :",this.pokemon.getID()+"");
 
-                    if(!this.pokemon.isEgg()){
-                        this.curExp.setText(this.pokemon.getCurExp()+"");
-                        String expText = "Exp Points: "+this.presenter.getExpPool();
-                        this.expPool.setText(expText);
-                    }
-
-                    if(this.presenter.isLeveledUp()){
-                        this.pokeLvl.setText("Level "+this.pokemon.getLevel());
-                        //masih: kayak pichu kan gabisa evolve, karena di if if in, dia bisa keupdate sih, tapi statnya ga ikut
-                        //karena updatenya kan lewat attachpokedata kayaknya
-                        //jadi nanti mungkin kasi this.pokestats.set dll gitu aja
-                        this.presenter.resetLeveledUp();
-
-                        //if hatch
-                        if(this.pokemon.isEgg()!=wasEgg){
-                            attachPokeData();
-                            Log.d("hatch is egg part","yea");
+                        if(!this.pokemon.isEgg()){
+                            this.curExp.setText(this.pokemon.getCurExp()+"");
+                            String expText = "Exp Points: "+this.presenter.getExpPool();
+                            this.expPool.setText(expText);
                         }
-                        //if evolve (1st Condition: if actually has evolution | 2nd: if current level is level needed for evol)
-                        if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= this.blueprint.nextLevelEvol){
-                            this.pokemon.setID(this.pokemon.getID()+1);
-                            evolvePokemon();
-                            attachPokeData();
-                            fetchTrainData();
-                            Log.d("evolve is egg part","yea");
+
+                        if(this.presenter.isLeveledUp()){
+                            this.pokeLvl.setText("Level "+this.pokemon.getLevel());
+                            //masih: kayak pichu kan gabisa evolve, karena di if if in, dia bisa keupdate sih, tapi statnya ga ikut
+                            //karena updatenya kan lewat attachpokedata kayaknya
+                            //jadi nanti mungkin kasi this.pokestats.set dll gitu aja
+                            this.presenter.resetLeveledUp();
+
+                            //if hatch
+                            if(this.pokemon.isEgg()!=wasEgg){
+                                attachPokeData();
+                                Log.d("hatch is egg part","yea");
+                            }
+                            //if evolve (1st Condition: if actually has evolution | 2nd: if current level is level needed for evol)
+                            if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= this.blueprint.nextLevelEvol){
+                                this.pokemon.setID(this.pokemon.getID()+1);
+                                evolvePokemon();
+                                attachPokeData();
+                                fetchTrainData();
+                                Log.d("evolve is egg part","yea");
+                            }
                         }
                     }
                 }
@@ -183,11 +199,24 @@ public class TrainFragment extends Fragment implements SensorEventListener {
             } catch (IOException e) { e.printStackTrace();}
             Drawable d = Drawable.createFromStream(ims, null);
             this.pokeImage.setImageDrawable(d);
+            this.hpStat.setText("?");
+            this.atkStat.setText("?");
+            this.defStat.setText("?");
+            this.spAtkStat.setText("?");
+            this.spDefStat.setText("?");
+            this.speedStat.setText("?");
         }else{
+            int[] statsArr = this.pokemon.getStats();
             this.curExp.setText(this.pokemon.getCurExp()+"");
             String expText = "Exp Points: "+this.presenter.getExpPool();
             this.expPool.setText(expText);
             Picasso.get().load(this.pokemon.getImageUrl()).into(this.pokeImage);
+            this.hpStat.setText(String.valueOf(statsArr[0]));
+            this.atkStat.setText(String.valueOf(statsArr[1]));
+            this.defStat.setText(String.valueOf(statsArr[2]));
+            this.spAtkStat.setText(String.valueOf(statsArr[3]));
+            this.spDefStat.setText(String.valueOf(statsArr[4]));
+            this.speedStat.setText(String.valueOf(statsArr[5]));
         }
     }
 

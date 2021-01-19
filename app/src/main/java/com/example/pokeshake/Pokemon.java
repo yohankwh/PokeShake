@@ -39,6 +39,10 @@ public class Pokemon {
         return isEgg() ? "Egg" : this.name;//if level<5, display name as egg
     }
 
+    public String getActualName(){
+        return this.name;
+    }
+
     public void setTypes(String types) { this.types = types; }
 
     public String getTypes(){return this.types;}
@@ -77,7 +81,8 @@ public class Pokemon {
         if(isEgg()){
             this.curExp+=10;
         }else{
-            this.curExp+=20;
+            this.curExp+=100;
         }
     }
+
 }

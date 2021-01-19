@@ -98,6 +98,7 @@ public class HomePresenter {
                                                                         //bentuk objek pokemonnya disini
                                                                         JSONObject res3 = new JSONObject(response3);
                                                                         String name = res3.getString("name");
+                                                                        if(!name.equals("")){name = name.substring(0,1).toUpperCase() + name.substring(1);}
                                                                         int[] statsArr = new int[6];
                                                                         JSONArray stats = res3.getJSONArray("stats");
                                                                         for (int i = 0; i < stats.length(); i++) {
