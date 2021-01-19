@@ -37,7 +37,7 @@ public class TrainFragment extends Fragment implements SensorEventListener {
     private TextView curExp;
     private TextView pokeLvl;
     private FrameLayout loadingCircleHolder;
-    int pokeIdx;
+    private int pokeIdx;
 
     private AlphaAnimation inAnimation;
     private AlphaAnimation outAnimation;
@@ -140,10 +140,36 @@ public class TrainFragment extends Fragment implements SensorEventListener {
                         this.pokeLvl.setText("Level "+this.pokemon.getLevel());
                         this.expPool.setText("Exp Points: "+this.presenter.getExpPool());
                         this.presenter.resetLeveledUp();
+
+                        if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= this.blueprint.nextLevelEvol){
+//                        if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= 7){
+                            this.pokemon.setID(this.pokemon.getID()+1);
+                            resetDisplay();
+                            fetchTrainData();
+                        }
                     }
                 }
             }
         }
+    }
+
+    public void resetDisplay(){
+        String newName = this.blueprint.getName();
+        if(!newName.equals("")){newName = newName.substring(0,1).toUpperCase() + newName.substring(1);}//Capitalize first word
+        this.pokemon.setName(newName);
+        this.pokeName.setText(this.pokemon.getName());
+        this.pokemon.setTypes(this.blueprint.getTypes());
+        //set types UI
+        this.pokemon.setStats(this.blueprint.getStatsArr());
+        Picasso.get().load(this.pokemon.getImageUrl()).into(this.pokeImage);
+    }
+
+    public int getCurrentPokeIdx(){
+        return this.pokeIdx;
+    }
+
+    public Pokemon getPokemon(){
+        return this.pokemon;
     }
 
     @Override

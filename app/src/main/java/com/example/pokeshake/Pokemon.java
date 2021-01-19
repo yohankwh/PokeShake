@@ -39,6 +39,10 @@ public class Pokemon {
         return isEgg() ? "Egg" : this.name;//if level<5, display name as egg
     }
 
+    public void setTypes(String types) { this.types = types; }
+
+    public void setStats(int[] stats){ this.stats = stats; }
+
     public String getImageUrl(){
         return "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/"+getID()+".png";
     }
