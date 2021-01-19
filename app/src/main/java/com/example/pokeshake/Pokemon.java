@@ -41,6 +41,8 @@ public class Pokemon {
 
     public void setTypes(String types) { this.types = types; }
 
+    public String getTypes(){return this.types;}
+
     public void setStats(int[] stats){ this.stats = stats; }
 
     public String getImageUrl(){
@@ -72,6 +74,10 @@ public class Pokemon {
     public void setCurExp(int curExp) {this.curExp = curExp;}
 
     public void train(){
-        this.curExp+=20;
+        if(isEgg()){
+            this.curExp+=10;
+        }else{
+            this.curExp+=20;
+        }
     }
 }

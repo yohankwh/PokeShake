@@ -49,7 +49,6 @@ public class HomePresenter {
 
             //get random pokemon by evolution ID, lewat endpoint yg ini bisa hemat request (setau saya?)
             int pokeEvolID = rand.nextInt(148) + 1; //variasi ID dari 1 sampe 148 (ditentuin sama kita)
-
             /*Fetching Data dengan Volley*/
             //Request bagian Luar: Tujuannya dapetin ID Pokemon dan URL Speciesnya
             RequestQueue queue = Volley.newRequestQueue(ctx); //Buat Queue Object 1
@@ -112,7 +111,7 @@ public class HomePresenter {
                                                                             pkmnType += "#" + type.getString("name");
                                                                         }
 
-                                                                        Pokemon newPoke = new Pokemon(pokeID, name, 0, 0,
+                                                                        Pokemon newPoke = new Pokemon(pokeID, name, 1, 0,
                                                                                           growth_rate, pkmnType, pokeEvolID, statsArr);
 
                                                                         fragmentListener.adoptPokemon(newPoke);

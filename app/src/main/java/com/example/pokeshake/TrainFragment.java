@@ -2,6 +2,7 @@ package com.example.pokeshake;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -22,6 +23,8 @@ import androidx.fragment.app.Fragment;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 import static android.content.Context.SENSOR_SERVICE;
@@ -64,6 +67,7 @@ public class TrainFragment extends Fragment implements SensorEventListener {
         View view = inflater.inflate(R.layout.fragment_train, container, false);
 
         this.pokemon = this.fragmentListener.getSinglePokemonByIndex(this.pokeIdx);
+        Log.d("poke url wat",this.pokemon.getID()+"  sad");
         this.presenter = new TrainPresenter(this.fragmentListener,
                                             this.pokemon.getLevel(),
                                             this.pokemon.getGrowthRate());
@@ -71,17 +75,12 @@ public class TrainFragment extends Fragment implements SensorEventListener {
         //Todo: Set TextViews & Images with Pokemon pkmn data
         this.loadingCircleHolder = view.findViewById(R.id.loadingCircleHolder);
         this.pokeName = view.findViewById(R.id.train_pokename_tv);
-        this.pokeName.setText(this.pokemon.getName());
         this.pokeImage = view.findViewById(R.id.train_poke_iv);
         this.curExp = view.findViewById(R.id.curexp_train_tv);
-        this.curExp.setText(this.pokemon.getCurExp()+"");
         this.pokeLvl = view.findViewById(R.id.train_pokelvl_tv);
-        this.pokeLvl.setText("Level "+this.pokemon.getLevel());
         this.expPool = view.findViewById(R.id.exppool_train_tv);
-        String expText = "Exp Points: "+ExpPoolCounter.getExpPool(this.pokemon.getLevel(), this.pokemon.getGrowthRate());
-        this.expPool.setText(expText);
 
-        Picasso.get().load(this.pokemon.getImageUrl()).into(this.pokeImage);
+        attachPokeData();
 
         //Setup Evolve Chain Data: Stored in this.blueprint
         fetchTrainData();
@@ -134,18 +133,35 @@ public class TrainFragment extends Fragment implements SensorEventListener {
                         Math.pow(z, 2)) - SensorManager.GRAVITY_EARTH;
                 if (acceleration > SHAKE_THRESHOLD) { //if device is s h o o k
                     mLastShakeTime = curTime;
+                    boolean wasEgg = this.pokemon.isEgg();
                     this.presenter.addExp(this.pokemon);
-                    this.curExp.setText(this.pokemon.getCurExp()+"");
+                    Log.d("actual name :",this.pokemon.getID()+"");
+
+                    if(!this.pokemon.isEgg()){
+                        this.curExp.setText(this.pokemon.getCurExp()+"");
+                        String expText = "Exp Points: "+this.presenter.getExpPool();
+                        this.expPool.setText(expText);
+                    }
+
                     if(this.presenter.isLeveledUp()){
                         this.pokeLvl.setText("Level "+this.pokemon.getLevel());
-                        this.expPool.setText("Exp Points: "+this.presenter.getExpPool());
+                        //masih: kayak pichu kan gabisa evolve, karena di if if in, dia bisa keupdate sih, tapi statnya ga ikut
+                        //karena updatenya kan lewat attachpokedata kayaknya
+                        //jadi nanti mungkin kasi this.pokestats.set dll gitu aja
                         this.presenter.resetLeveledUp();
 
+                        //if hatch
+                        if(this.pokemon.isEgg()!=wasEgg){
+                            attachPokeData();
+                            Log.d("hatch is egg part","yea");
+                        }
+                        //if evolve (1st Condition: if actually has evolution | 2nd: if current level is level needed for evol)
                         if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= this.blueprint.nextLevelEvol){
-//                        if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= 7){
                             this.pokemon.setID(this.pokemon.getID()+1);
-                            resetDisplay();
+                            evolvePokemon();
+                            attachPokeData();
                             fetchTrainData();
+                            Log.d("evolve is egg part","yea");
                         }
                     }
                 }
@@ -153,15 +169,39 @@ public class TrainFragment extends Fragment implements SensorEventListener {
         }
     }
 
-    public void resetDisplay(){
-        String newName = this.blueprint.getName();
-        if(!newName.equals("")){newName = newName.substring(0,1).toUpperCase() + newName.substring(1);}//Capitalize first word
+    public void attachPokeData(){
+        this.pokeName.setText(capitalize(this.pokemon.getName()));
+        this.pokeLvl.setText("Level "+this.pokemon.getLevel());
+        //set types UI as well
+
+        if(this.pokemon.isEgg()){
+            this.curExp.setText("");
+            this.expPool.setText("");
+            InputStream ims = null;
+            try {
+                ims = getActivity().getAssets().open("egg.png");
+            } catch (IOException e) { e.printStackTrace();}
+            Drawable d = Drawable.createFromStream(ims, null);
+            this.pokeImage.setImageDrawable(d);
+        }else{
+            this.curExp.setText(this.pokemon.getCurExp()+"");
+            String expText = "Exp Points: "+this.presenter.getExpPool();
+            this.expPool.setText(expText);
+            Picasso.get().load(this.pokemon.getImageUrl()).into(this.pokeImage);
+        }
+    }
+
+    public void evolvePokemon(){
+        String newName = capitalize(this.blueprint.getName());
         this.pokemon.setName(newName);
         this.pokeName.setText(this.pokemon.getName());
         this.pokemon.setTypes(this.blueprint.getTypes());
-        //set types UI
         this.pokemon.setStats(this.blueprint.getStatsArr());
-        Picasso.get().load(this.pokemon.getImageUrl()).into(this.pokeImage);
+    }
+
+    public String capitalize(String in){//Capitalize first letter
+        if(!in.equals("")){in = in.substring(0,1).toUpperCase() + in.substring(1);}
+        return in;
     }
 
     public int getCurrentPokeIdx(){

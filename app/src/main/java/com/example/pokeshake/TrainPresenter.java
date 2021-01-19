@@ -41,7 +41,7 @@ public class TrainPresenter {
     public void addExp(Pokemon pokemon){
         if(this.allowTraining){
             pokemon.train();
-            if(pokemon.getCurExp()>this.expPool){
+            if(pokemon.getCurExp()>=this.expPool){
                 pokemon.setLevel(pokemon.getLevel()+1);
                 pokemon.setCurExp(0);
                 this.level++;
@@ -52,9 +52,7 @@ public class TrainPresenter {
     }
 
     public void setNewExpPool(){
-        Log.d("prev expool",this.expPool+"");
         this.expPool = ExpPoolCounter.getExpPool(this.level, this.growthRate);
-        Log.d("after expool",this.expPool+"");
     }
 
     public int getExpPool(){
@@ -83,7 +81,8 @@ public class TrainPresenter {
                                 JSONArray tempArray;
 
                                 while(checkID != curID){//checks whether it's the last pokemon form :)
-                                    Log.d("pls","i want sleep");
+                                    Log.d("checkidvscurid",checkID+" "+curID);
+                                    Log.d("evolchain dat",evolChain.toString());
                                     URI uri = new URI(evolChain.getJSONObject("species").getString("url"));
                                     //Pecahin dari URL jadi dapet ID Pokemon
                                     String[] segments = uri.getPath().split("/");
@@ -99,7 +98,7 @@ public class TrainPresenter {
                                 }
 
                                 if(evolChain.has("flag")){//it is the last form, send blank class
-                                    blueprint = new PokeBlueprint(-1,"","",new int[0],0);
+                                    blueprint = new PokeBlueprint(-1,"","",new int[0],-1);
                                     fetchingData = false;
                                     fragmentListener.sendBlueprint(blueprint);
                                 }
@@ -107,6 +106,7 @@ public class TrainPresenter {
                                     int nxtLvlEvol = evolChain.getJSONArray("evolution_details")
                                                     .getJSONObject(0)
                                                     .optInt("min_level",-1);
+                                    Log.d("nxtlevlevol",nxtLvlEvol+" HERE U GO LEVEL");
                                     //Request next pokemon data
                                     RequestQueue queue2 = Volley.newRequestQueue(ctx);
                                     String nextPokeData = "https://pokeapi.co/api/v2/pokemon/" + (curID+1) + "/";
@@ -131,6 +131,7 @@ public class TrainPresenter {
                                                         }
                                                         blueprint = new PokeBlueprint(nextId, nextName, nextTypes, nextStats, nxtLvlEvol);
                                                         fragmentListener.sendBlueprint(blueprint);
+                                                        Log.d("DONE WTF","YEAH DONE PLS");
                                                     }
                                                     catch (JSONException e) {e.printStackTrace();}
                                                     fetchingData = false;
