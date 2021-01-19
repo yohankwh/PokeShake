@@ -39,26 +39,35 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
     private TextView exp;
     private ImageView pokeImg;
     int pokeIdx;
+    private boolean loadedOnce;
 
     private Button trainBtn;
     private Button releaseBtn;
 
     String[] labels = {"HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"};
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-
-        Bundle bundle = this.getArguments();
-        if(bundle != null){
-            this.pokeIdx = bundle.getInt("pokeIdx");
-        }
-    }
+//    @Override
+//    public void onCreate(@Nullable Bundle savedInstanceState){
+//        super.onCreate(savedInstanceState);
+//
+//        Bundle bundle = this.getArguments();
+//        if(bundle != null){
+//            this.pokeIdx = bundle.getInt("pokeIdx");
+//        }
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view_pokemon, container, false);
+
+        Bundle bundle = this.getArguments();
+        if(bundle != null){
+            this.pokeIdx = bundle.getInt("pokeIdx");
+        }
+
+        loadedOnce = true;
+
         this.trainBtn = view.findViewById(R.id.btn_train);
         this.trainBtn.setOnClickListener(this);
         this.releaseBtn = view.findViewById(R.id.btn_release);
@@ -67,15 +76,28 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
         this.level = view.findViewById(R.id.tv_poke_lvl);
         this.exp = view.findViewById(R.id.tv_poke_exp);
         this.pokeImg = view.findViewById(R.id.iv_poke_img);
+        this.radarChart = view.findViewById(R.id.radarChart);
 
         this.pokemon = this.fragmentListener.getSinglePokemonByIndex(this.pokeIdx);
+        attachPokeData(pokemon);
 
-        this.name.setText(this.pokemon.getName());
-        this.level.setText("Level "+this.pokemon.getLevel());
-        String expText = this.pokemon.getCurExp()+" / "+ExpPoolCounter.getExpPool(this.pokemon.getLevel(), this.pokemon.getGrowthRate());
+        return view;
+    }
+
+    private ArrayList<RadarEntry> dataValue(Pokemon pkmn){
+        ArrayList<RadarEntry> temp = new ArrayList<>();
+        for(int stat : pkmn.getStats()){
+            temp.add(new RadarEntry(stat));
+        }
+        return temp;
+    }
+
+    public void attachPokeData(Pokemon pkmn){
+        this.name.setText(pkmn.getName());
+        this.level.setText("Level "+pkmn.getLevel());
+        String expText = pkmn.getCurExp()+" / "+ExpPoolCounter.getExpPool(pkmn.getLevel(), pkmn.getGrowthRate());
         this.exp.setText(expText);
-
-        if(this.pokemon.isEgg()){
+        if(pkmn.isEgg()){
             InputStream ims = null;
             try {
                 ims = getActivity().getAssets().open("egg.png");
@@ -83,25 +105,16 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
             Drawable d = Drawable.createFromStream(ims, null);
             this.pokeImg.setImageDrawable(d);
         }else{
-            Picasso.get().load(this.pokemon.getImageUrl()).into(this.pokeImg);
+            Picasso.get().load(pkmn.getImageUrl()).into(this.pokeImg);
         }
 
-//        int[] statsArr = this.pokemon.getStats();
-//
-//        Log.d("Stats",statsArr[0]+"");
-
-        //Todo: Set TextViews & Images with Pokemon pkmn data
-
-        this.radarChart = view.findViewById(R.id.radarChart);
         this.radarChart.getDescription().setEnabled(false);
         this.radarChart.getLegend().setEnabled(false);
         this.radarChart.setWebColorInner(Color.WHITE);
 
-        RadarDataSet dataSet = new RadarDataSet(dataValue(), "Pokemon");
+        RadarDataSet dataSet = new RadarDataSet(dataValue(pkmn), "Pokemon");
         dataSet.setValueTextColor(Color.WHITE);
-
         dataSet.setColor(Color.RED);
-
         RadarData data = new RadarData();
         data.addDataSet(dataSet);
 
@@ -113,16 +126,6 @@ public class ViewFragment extends Fragment implements View.OnClickListener {
 
         radarChart.setData(data);
         radarChart.invalidate();
-
-        return view;
-    }
-
-    private ArrayList<RadarEntry> dataValue(){
-        ArrayList<RadarEntry> temp = new ArrayList<>();
-        for(int stat : this.pokemon.getStats()){
-            temp.add(new RadarEntry(stat));
-        }
-        return temp;
     }
 
     @Override

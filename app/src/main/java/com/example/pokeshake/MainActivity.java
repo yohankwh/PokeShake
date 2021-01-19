@@ -194,6 +194,30 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
     }
 
     @Override
+    public void onBackPressed() {
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        //if in EditFragment, when press back run changePage to avoid error!
+        if (f instanceof TrainFragment) {
+            Pokemon pkmn = this.trainFragment.getPokemon();
+            this.pokeMenuFragment.updatePokeInList(this.trainFragment.getCurrentPokeIdx(), pkmn);
+            this.viewFragment.attachPokeData(pkmn);
+            this.changePage(3, this.trainFragment.getCurrentPokeIdx());
+            super.onBackPressed();
+//            this.changePage(1, -1);
+            Log.d("Through here","bro");
+        }else if(f instanceof ViewFragment) {
+            this.changePage(2, -1);
+            super.onBackPressed();
+        }else if(f instanceof PokeMenuFragment) {
+            this.changePage(1, -1);
+            super.onBackPressed();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public void changePage(int page, int pokeIdx) {
         FragmentTransaction ft = this.fragmentManager.beginTransaction();
         if (page == 1) {
@@ -236,6 +260,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             if(this.trainFragment.isAdded()){
                 ft.hide(this.trainFragment);
             }
+            if(this.viewFragment.isAdded()){
+                ft.hide(this.viewFragment);
+            }
         } else if (page == 3) {
             if(pokeIdx!=-1){
                 Bundle bundle = new Bundle();
@@ -257,6 +284,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
             }
             if(this.shakeTester.isAdded()){
                 ft.hide(this.shakeTester);
+            }
+            if(this.pokeMenuFragment.isAdded()){
+                ft.hide(this.pokeMenuFragment);
             }
             if(this.trainFragment.isAdded()){
                 ft.hide(this.trainFragment);
@@ -294,6 +324,9 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
                         .addToBackStack(null);
             }
 
+            if(this.pokeMenuFragment.isAdded()){
+                ft.hide(this.pokeMenuFragment);
+            }
             if(this.homeFragment.isAdded()){
                 ft.hide(this.homeFragment);
             }
