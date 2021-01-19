@@ -11,12 +11,19 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
+
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.FadingCircle;
+import com.github.ybq.android.spinkit.style.RotatingCircle;
+
 import org.json.JSONException;
 import java.util.concurrent.TimeUnit;
 
 public class HomeFragment extends Fragment implements View.OnClickListener{
+    private ProgressBar progressBar;
     private TextView moneyTV;
     private Button adoptBtn;
     private Button pokeMenuBtn;
@@ -37,6 +44,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        this.progressBar = (ProgressBar)view.findViewById(R.id.spin_kit_home);
+        Sprite rotatingCircle = new RotatingCircle();
+        progressBar.setIndeterminateDrawable(rotatingCircle);
 
         this.presenter = new HomePresenter(this.fragmentListener);
 

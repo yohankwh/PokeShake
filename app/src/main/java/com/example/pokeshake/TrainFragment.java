@@ -14,9 +14,13 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.CubeGrid;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -29,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import static android.content.Context.SENSOR_SERVICE;
 
 public class TrainFragment extends Fragment implements SensorEventListener, View.OnClickListener {
+    private ProgressBar progressBar;
     private FragmentListener fragmentListener;
     private TrainPresenter presenter;
     protected Pokemon pokemon;
@@ -72,6 +77,10 @@ public class TrainFragment extends Fragment implements SensorEventListener, View
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_train, container, false);
+
+        this.progressBar = (ProgressBar)view.findViewById(R.id.spin_kit_train);
+        Sprite cubeGrid = new CubeGrid();
+        progressBar.setIndeterminateDrawable(cubeGrid);
 
         this.pokemon = this.fragmentListener.getSinglePokemonByIndex(this.pokeIdx);
         this.presenter = new TrainPresenter(this.fragmentListener,
