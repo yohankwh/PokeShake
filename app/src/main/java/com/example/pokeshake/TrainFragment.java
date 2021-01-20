@@ -156,37 +156,41 @@ public class TrainFragment extends Fragment implements SensorEventListener, View
                         Math.pow(z, 2)) - SensorManager.GRAVITY_EARTH;
                 if (acceleration > SHAKE_THRESHOLD) { //if device is s h o o k
                     if(!this.presenter.isFetching()){
-                        mLastShakeTime = curTime;
-                        boolean wasEgg = this.pokemon.isEgg();
-                        this.presenter.addExp(this.pokemon);
+                        if(this.pokemon.getLevel() < 100) {
+                            mLastShakeTime = curTime;
+                            boolean wasEgg = this.pokemon.isEgg();
+                            this.presenter.addExp(this.pokemon);
 
-                        if(!this.pokemon.isEgg()){
-                            this.curExp.setText(this.pokemon.getCurExp()+"");
-                            String expText = "Exp Points: "+this.presenter.getExpPool();
-                            this.expPool.setText(expText);
-                        }
-
-                        if(this.presenter.isLeveledUp()){
-                            if(!this.pokemon.isEgg()){
-                                try {
-                                    this.fragmentListener.addMoney();
-                                } catch (JSONException e) {e.printStackTrace();}
+                            if (!this.pokemon.isEgg()) {
+                                this.curExp.setText(this.pokemon.getCurExp() + "");
+                                String expText = "Exp Points: " + this.presenter.getExpPool();
+                                this.expPool.setText(expText);
                             }
 
-                            this.pokeLvl.setText("Level "+this.pokemon.getLevel());
+                            if (this.presenter.isLeveledUp()) {
+                                if (!this.pokemon.isEgg()) {
+                                    try {
+                                        this.fragmentListener.addMoney();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
 
-                            this.presenter.resetLeveledUp();
+                                this.pokeLvl.setText("Level " + this.pokemon.getLevel());
 
-                            //if hatch
-                            if(this.pokemon.isEgg()!=wasEgg){
-                                attachPokeData();
-                            }
-                            //if evolve (1st Condition: if actually has evolution | 2nd: if current level is level needed for evol)
-                            if(this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= this.blueprint.nextLevelEvol){
-                                this.pokemon.setID(this.pokemon.getID()+1);
-                                evolvePokemon();
-                                attachPokeData();
-                                fetchTrainData();
+                                this.presenter.resetLeveledUp();
+
+                                //if hatch
+                                if (this.pokemon.isEgg() != wasEgg) {
+                                    attachPokeData();
+                                }
+                                //if evolve (1st Condition: if actually has evolution | 2nd: if current level is level needed for evol)
+                                if (this.blueprint.nextLevelEvol != -1 && this.pokemon.getLevel() >= this.blueprint.nextLevelEvol) {
+                                    this.pokemon.setID(this.pokemon.getID() + 1);
+                                    evolvePokemon();
+                                    attachPokeData();
+                                    fetchTrainData();
+                                }
                             }
                         }
                     }
